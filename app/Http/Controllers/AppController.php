@@ -62,7 +62,7 @@ class AppController extends Controller
                     ->filter(static function (string $phone) {
                         return str_starts_with($phone, '+79');
                     })
-                    ->each(static fn (string $phone) => $phones->add($phone));
+                    ->each(static fn (string $phone) => $phones->add(trim($phone, '+')));
             }
             fclose($uploadedFile);
         } else {

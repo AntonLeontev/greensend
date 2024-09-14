@@ -3,8 +3,8 @@
 @section('title', 'Обработка файлов')
 
 @section('content')
-    <div class="flex h-screen items-center justify-center">
-        <form class="flex h-min flex-col items-center gap-5" x-data="{
+    <div class="flex items-center justify-center h-screen">
+        <form class="flex flex-col items-center gap-5 h-min" x-data="{
             processing: false,
             fileName: '',
         

@@ -1,0 +1,30 @@
+<?php
+
+namespace Deployer;
+
+require 'recipe/laravel.php';
+
+// Config
+
+set('repository', 'https://github.com/AntonLeontev/greensend.git');
+
+add('shared_files', []);
+add('shared_dirs', []);
+add('writable_dirs', []);
+
+task('build', function () {
+    cd('{{release_path}}');
+    run('npm install');
+    run('npm run build');
+});
+
+// Hosts
+
+host('94.241.174.226')
+    ->set('remote_user', 'deployer')
+    ->set('deploy_path', '~/greensend');
+
+// Hooks
+
+after('deploy:failed', 'deploy:unlock');
+after('deploy:vendors', 'build');
