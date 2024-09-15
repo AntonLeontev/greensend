@@ -46,6 +46,8 @@ class AppController extends Controller
 
                 if (is_null($headers)) {
                     $headers = explode(';', $line);
+                    $headers = Arr::map($headers, static fn ($item) => trim($item));
+                    $headers = Arr::map($headers, static fn ($item) => trim($item, "\u{FEFF}"));
 
                     continue;
                 }
@@ -59,13 +61,14 @@ class AppController extends Controller
                 }
 
                 $lineData = array_combine($headers, $line);
-
+                dump($lineData);
                 str($lineData['phone'])
+                    ->trim()
                     ->trim('=')
                     ->trim('"')
                     ->explode(', ')
                     ->filter(static function (string $phone) {
-                        return str_starts_with($phone, '+79');
+                        return str_starts_with($phone, '+79') || str_starts_with($phone, '79');
                     })
                     ->each(static fn (string $phone) => $phones->add(trim($phone, '+')));
             }
