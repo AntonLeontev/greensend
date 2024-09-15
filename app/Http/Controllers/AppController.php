@@ -61,7 +61,7 @@ class AppController extends Controller
                 }
 
                 $lineData = array_combine($headers, $line);
-                dump($lineData);
+
                 str($lineData['phone'])
                     ->trim()
                     ->trim('=')
