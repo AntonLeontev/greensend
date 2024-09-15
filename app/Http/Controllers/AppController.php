@@ -15,7 +15,7 @@ class AppController extends Controller
     public function handle(Request $request)
     {
         $request->validate([
-            // 'file' => 'required|file|mimetypes:text/csv	|max:6000',
+            'file' => 'required|file|max:15000',
         ]);
 
         // if ($request->file('file')->isValid()) {}
@@ -26,6 +26,11 @@ class AppController extends Controller
 
         $file = $request->file('file');
         $originalFileName = $file->getClientOriginalName();
+
+        if (str($originalFileName)->afterLast('.')->value() !== 'csv') {
+            abort(422, 'Файл должен быть csv');
+        }
+
         $filePath = $file->storeAs('uploads', 'uploadedfile.csv');
 
         $uploadedFile = fopen(storage_path('app/private/'.$filePath), 'r');
@@ -98,7 +103,7 @@ class AppController extends Controller
             $writer->close();
         }
 
-        $zipFileName = $originalFileName.'.zip';
+        $zipFileName = storage_path("app/private/{$name}.zip");
         $zip = new ZipArchive;
         if ($zip->open($zipFileName, ZipArchive::CREATE | ZipArchive::OVERWRITE) === true) {
             foreach ($files as $file) {
@@ -116,9 +121,11 @@ class AppController extends Controller
         Storage::deleteDirectory(str($originalFileName)->beforeLast('.'));
 
         // Return the ZIP file as a response
-        return response()->download($zipFileName, $zipFileName, [
+        $name = str($zipFileName)->afterLast('/')->value();
+
+        return response()->download($zipFileName, $name, [
             'Content-Type' => 'application/octet-stream',
-            'Content-Disposition' => 'attachment; filename="'.$zipFileName.'"',
+            'Content-Disposition' => 'attachment; filename="'.$name.'"',
         ])->deleteFileAfterSend(true);
 
         return response()->json('ok');

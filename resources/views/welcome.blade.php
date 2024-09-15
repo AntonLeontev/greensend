@@ -36,7 +36,10 @@
                         link.click();
                         URL.revokeObjectURL(link.href);
                     })
-                    .catch(err => console.error(err))
+                    .catch(err => {
+						console.log(err)
+						alert(err.message)
+					})
                     .finally(() => this.processing = false)
             },
             saveValues() {
@@ -53,18 +56,25 @@
                 this.fileName = name.join('.');
             },
         }" @submit.prevent="submit">
-            <input type="file" name='file' x-ref="file" @change="getFileName">
-            <div class="flex gap-2">
-                <textarea name="text1" class="border" x-ref="text1"></textarea>
-                <textarea name="text2" class="border" x-ref="text2"></textarea>
-                <textarea name="text3" class="border" x-ref="text3"></textarea>
-            </div>
+            <input class="p-1 border" type="file" name='file' x-ref="file" @change="getFileName">
 
-            <input type="number" step="1" min="1" value="50" name="number" x-ref="number">
+			<div class="flex flex-col justify-center">
+				<div class="text-center">Сообщения</div>
+				<div class="flex gap-2">
+					<textarea name="text1" class="p-1 border" x-ref="text1" rows="5"></textarea>
+					<textarea name="text2" class="p-1 border" x-ref="text2" rows="5"></textarea>
+					<textarea name="text3" class="p-1 border" x-ref="text3" rows="5"></textarea>
+				</div>
+			</div>
+
+			<div class="flex flex-col justify-center">
+				<label class="block">Количество телефонов в одном файле</label>
+				<input type="number" step="1" min="1" value="50" name="number" x-ref="number" class="p-1 border">
+			</div>
 
             <button class="flex min-w-[200px] items-center justify-center gap-1 border p-2 transition hover:bg-green-100"
                 :disabled="processing">
-                <span x-show="!processing">submit</span>
+                <span x-show="!processing">Отправить</span>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="24" height="24"
                     x-show="processing" x-cloak>
                     <radialGradient id="a9" cx=".66" fx=".66" cy=".3125" fy=".3125"
