@@ -37,8 +37,10 @@
                         URL.revokeObjectURL(link.href);
                     })
                     .catch(err => {
-						console.log(err)
-						alert(err.message)
+						err.response.data.text().then((errorText) => {
+							const errorJson = JSON.parse(errorText);
+							alert(errorJson.message)
+						});
 					})
                     .finally(() => this.processing = false)
             },

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\Wamm\WammService;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -12,8 +13,10 @@ use ZipArchive;
 
 class AppController extends Controller
 {
-    public function handle(Request $request)
+    public function handle(Request $request, WammService $wamm)
     {
+        set_time_limit(60 * 30);
+
         $request->validate([
             'file' => 'required|file|max:15000',
         ]);
@@ -70,7 +73,12 @@ class AppController extends Controller
                     ->filter(static function (string $phone) {
                         return str_starts_with($phone, '+79') || str_starts_with($phone, '79');
                     })
-                    ->each(static fn (string $phone) => $phones->add(trim($phone, '+')));
+                    ->each(static function (string $phone) use ($phones, $wamm) {
+                        if ($wamm->checkPhone($phone)) {
+                            $phones->add(trim($phone, '+'));
+                        }
+
+                    });
             }
             fclose($uploadedFile);
         } else {
