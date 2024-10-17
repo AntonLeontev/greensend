@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\Wamm\Exceptions\WammException;
 use App\Services\Wamm\WammService;
 use Exception;
 use Illuminate\Http\Request;
@@ -74,10 +75,13 @@ class AppController extends Controller
                         return str_starts_with($phone, '+79') || str_starts_with($phone, '79');
                     })
                     ->each(static function (string $phone) use ($phones, $wamm) {
-                        if ($wamm->checkPhone($phone)) {
-                            $phones->add(trim($phone, '+'));
+                        try {
+                            if ($wamm->checkPhone($phone)) {
+                                $phones->add(trim($phone, '+'));
+                            }
+                        } catch (WammException $e) {
+                            // do nothing
                         }
-
                     });
             }
             fclose($uploadedFile);

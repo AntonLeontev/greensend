@@ -4,11 +4,13 @@ use App\Http\Controllers\AppController;
 use App\Services\Wamm\WammService;
 use Illuminate\Support\Facades\Route;
 
-Route::get('test', function (WammService $service) {
-    $r = $service->sendMessage('79126510464', 'test message');
+if (config('app.url') === 'http://127.0.0.1:8000') {
+    Route::get('test', function (WammService $service) {
+        $r = $service->channelList();
 
-    dd($r);
-});
+        dd($r);
+    });
+}
 
 Route::get('/checkscript', function () {
     return view('welcome');
