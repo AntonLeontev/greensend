@@ -59,6 +59,12 @@
                 this.fileName = name.join('.');
             },
         }" @submit.prevent="submit">
+			@if (Route::currentRouteName() === 'script2')
+				<h1 class="mb-3 font-bold">Без проверки номеров на наличие в WhatsApp</h1>
+			@else
+				<h1 class="mb-3 font-bold">С проверкой номеров на наличие в WhatsApp</h1>
+			@endif
+			
             <input class="p-1 border" type="file" name='file' x-ref="file" @change="getFileName">
 
 			<div class="flex flex-col justify-center">

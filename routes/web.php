@@ -18,12 +18,12 @@ Route::get('/', function () {
 
 Route::get('/checkscript', function () {
     return view('welcome');
-});
+})->name('script');
 
 Route::post('/checkscript', [AppController::class, 'handle']);
 
 Route::get('/checkscript2', function () {
     return view('welcome');
-});
+})->name('script2');
 
 Route::post('/checkscript2', [AppController::class, 'handle2']);
