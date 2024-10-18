@@ -66,6 +66,7 @@
 			@endif
 			
             <input class="p-1 border" type="file" name='file' x-ref="file" @change="getFileName">
+			<span>Кодировка файла должна быть UTF-8</span>
 
 			<div class="flex flex-col justify-center">
 				<div class="text-center">Сообщения</div>
