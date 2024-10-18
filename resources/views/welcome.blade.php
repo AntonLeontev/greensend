@@ -27,7 +27,7 @@
         
                 this.saveValues()
         
-                axios.post('/checkscript', new FormData(e.target), { responseType: 'blob' })
+                axios.post(window.location.href, new FormData(e.target), { responseType: 'blob' })
                     .then(resp => {
                         let blob = resp.data
                         const link = document.createElement('a');
@@ -37,6 +37,7 @@
                         URL.revokeObjectURL(link.href);
                     })
                     .catch(err => {
+						console.log(err)
 						err.response.data.text().then((errorText) => {
 							const errorJson = JSON.parse(errorText);
 							alert(errorJson.message)

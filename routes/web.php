@@ -12,8 +12,18 @@ if (config('app.url') === 'http://127.0.0.1:8000') {
     });
 }
 
+Route::get('/', function () {
+    return view('app');
+});
+
 Route::get('/checkscript', function () {
     return view('welcome');
 });
 
 Route::post('/checkscript', [AppController::class, 'handle']);
+
+Route::get('/checkscript2', function () {
+    return view('welcome');
+});
+
+Route::post('/checkscript2', [AppController::class, 'handle2']);

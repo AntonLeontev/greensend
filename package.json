@@ -16,6 +16,7 @@
     },
     "dependencies": {
         "@hawk.so/javascript": "^3.0.2",
+        "@vitejs/plugin-vue": "^5.1.4",
         "alpinejs": "^3.14.1"
     }
 }
