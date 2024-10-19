@@ -7,6 +7,7 @@
     },
     "devDependencies": {
         "@hawk.so/vite-plugin": "^1.0.2",
+        "@mdi/font": "^7.4.47",
         "autoprefixer": "^10.4.20",
         "axios": "^1.7.4",
         "laravel-vite-plugin": "^1.0",
@@ -17,6 +18,10 @@
     "dependencies": {
         "@hawk.so/javascript": "^3.0.2",
         "@vitejs/plugin-vue": "^5.1.4",
-        "alpinejs": "^3.14.1"
+        "alpinejs": "^3.14.1",
+        "pinia": "^2.2.4",
+        "vite-plugin-vuetify": "^2.0.4",
+        "vue-router": "^4.4.5",
+        "vuetify": "^3.7.3"
     }
 }

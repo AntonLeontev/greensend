@@ -1,0 +1,12 @@
+<template>
+	<v-app>
+		<v-main class="justify-center d-flex align-center">
+			<div class="w-100">
+				<div class="text-center text-h3">
+					Greensend
+				</div>
+				<slot></slot>
+			</div>
+		</v-main>
+	</v-app>
+</template>
