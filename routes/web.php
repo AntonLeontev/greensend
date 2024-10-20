@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AppController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\WhatsAppCheckController;
 use App\Services\Wamm\WammService;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Route;
@@ -35,6 +36,8 @@ Route::get('user', function () {
 
     return response()->json(auth()->user());
 });
+
+Route::post('whats-app-check', WhatsAppCheckController::class);
 
 Route::fallback(function () {
     return view('app');
