@@ -34,7 +34,7 @@
                         prepend-inner-icon="mdi-lock-outline"></v-text-field>
 
 					<div class="mt-n3 text-end">
-						<router-link :to="{name: 'login'}" class="text-caption hover-blue">Вход на сайт</router-link>
+						<router-link :to="{name: 'login'}" class="underline text-caption hover-blue">Вход на сайт</router-link>
 					</div>
 
                     <br>

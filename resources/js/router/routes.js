@@ -1,6 +1,6 @@
-import ForgotPassword from "@/pages/ForgotPassword.vue";
-import ResetPassword from "@/pages/ResetPassword.vue";
-import Login from "@/pages/Login.vue";
+import ForgotPassword from "@/pages/auth/ForgotPassword.vue";
+import ResetPassword from "@/pages/auth/ResetPassword.vue";
+import Login from "@/pages/auth/Login.vue";
 
 export default [
     {

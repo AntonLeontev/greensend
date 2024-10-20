@@ -1,14 +1,13 @@
 <script setup>
     import axios from 'axios';
-	import AuthLayout from '../layouts/AuthLayout.vue';
+	import AuthLayout from '@/layouts/AuthLayout.vue';
 	import { useUserStore } from '@/stores/user';
 	import { useToastsStore } from '@/stores/toasts';
-	import router from '../router';
+	import router from '@/router';
 
     import { ref } from 'vue';
 
     const loading = ref(false);
-    const error = ref(null);
 	const userStore = useUserStore();
 	const toastsStore = useToastsStore();
 
@@ -42,7 +41,7 @@
                         prepend-inner-icon="mdi-lock-outline"></v-text-field>
 
 					<div class="mt-n3 text-end hover-blue">
-						<router-link :to="{name: 'forgot-password'}" class="text-caption">Забыли пароль?</router-link>
+						<router-link :to="{name: 'forgot-password'}" class="underline text-caption">Забыли пароль?</router-link>
 					</div>
 
                     <br>
