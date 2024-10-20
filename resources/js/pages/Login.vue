@@ -2,6 +2,7 @@
     import axios from 'axios';
 	import AuthLayout from '../layouts/AuthLayout.vue';
 	import { useUserStore } from '@/stores/user';
+	import { useToastsStore } from '@/stores/toasts';
 	import router from '../router';
 
     import { ref } from 'vue';
@@ -9,6 +10,7 @@
     const loading = ref(false);
     const error = ref(null);
 	const userStore = useUserStore();
+	const toastsStore = useToastsStore();
 
     function onSubmit(event) {
         loading.value = true;
@@ -20,10 +22,7 @@
 				router.push({name: 'home'})
 			})
 			.catch(err => {
-				if (err.response.status === 422) {
-					error.value = err.response.data.message 
-				}
-				console.log(err);
+				toastsStore.addError(err.response?.data?.message ?? err.message)
 			})
 			.finally(() => {
 				loading.value = false
@@ -45,8 +44,6 @@
 					<div class="mt-n3 text-end hover-blue">
 						<router-link :to="{name: 'forgot-password'}" class="text-caption">Забыли пароль?</router-link>
 					</div>
-
-					<div class="mt-3 text-center text-danger">{{ error }}</div>
 
                     <br>
 
