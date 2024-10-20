@@ -16,7 +16,7 @@ class AuthController extends Controller
             'password' => ['required'],
         ]);
 
-        if (! Auth::attempt($credentials)) {
+        if (! Auth::attempt($credentials, true)) {
             throw ValidationException::withMessages(['email' => 'Неверный логин или пароль']);
         }
 

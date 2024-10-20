@@ -1,3 +1,7 @@
+<script setup lang="ts">
+import Toasts from '@/components/Toasts.vue';
+</script>
+
 <template>
 	<v-app>
 		<v-main class="justify-center d-flex align-center">
@@ -9,4 +13,6 @@
 			</div>
 		</v-main>
 	</v-app>
+
+	<Toasts />
 </template>

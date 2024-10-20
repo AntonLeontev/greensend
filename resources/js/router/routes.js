@@ -1,6 +1,7 @@
 import AboutView from "@/components/AboutView.vue";
 import HomeView from "@/components/HomeView.vue";
 import ForgotPassword from "@/pages/ForgotPassword.vue";
+import ResetPassword from "@/pages/ResetPassword.vue";
 import Login from "@/pages/Login.vue";
 
 export default [
@@ -16,5 +17,10 @@ export default [
         path: "/forgot-password",
         component: ForgotPassword,
         name: "forgot-password",
+    },
+    {
+        path: "/reset-password",
+        component: ResetPassword,
+        name: "reset-password",
     },
 ];

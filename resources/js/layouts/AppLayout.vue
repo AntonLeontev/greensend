@@ -1,6 +1,8 @@
 <script setup>
-import { useUserStore } from '../stores/user';
+import Toasts from '@/components/Toasts.vue';
+import { useUserStore } from '@/stores/user';
 import { useRouter } from 'vue-router';
+
 
 const userStore = useUserStore();
 const router = useRouter();
@@ -14,7 +16,9 @@ function logout() {
 
 <template>
     <v-app>
-        <v-app-bar title="Application bar">
+        <v-app-bar class="px-2">
+			<span class="text-h4">Greensend</span>
+			<v-spacer></v-spacer>
             <v-btn prepend-icon="mdi-logout" text="Выйти" @click="logout"></v-btn>
         </v-app-bar>
 
@@ -33,4 +37,6 @@ function logout() {
             <slot></slot>
         </v-main>
     </v-app>
+
+	<Toasts />
 </template>
