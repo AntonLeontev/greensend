@@ -1,15 +1,30 @@
-import AboutView from "@/components/AboutView.vue";
-import HomeView from "@/components/HomeView.vue";
 import ForgotPassword from "@/pages/ForgotPassword.vue";
 import ResetPassword from "@/pages/ResetPassword.vue";
 import Login from "@/pages/Login.vue";
 
 export default [
-    { path: "/", component: HomeView, name: "home", meta: { auth: true } },
     {
-        path: "/about",
-        component: AboutView,
-        name: "about",
+        path: "/",
+        component: () => import("@/pages/FileToArchive.vue"),
+        name: "home",
+        meta: { auth: true },
+    },
+    {
+        path: "/whats-app-check",
+        component: () => import("@/pages/WhatsAppCheck.vue"),
+        name: "whats-app-check",
+        meta: { auth: true },
+    },
+    {
+        path: "/distributions",
+        component: () => import("@/pages/Distributions.vue"),
+        name: "distributions",
+        meta: { auth: true },
+    },
+    {
+        path: "/new-distribution",
+        component: () => import("@/pages/NewDistribution.vue"),
+        name: "new-distribution",
         meta: { auth: true },
     },
     { path: "/login", component: Login, name: "login" },

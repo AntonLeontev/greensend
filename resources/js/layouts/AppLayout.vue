@@ -1,11 +1,12 @@
 <script setup>
 import Toasts from '@/components/Toasts.vue';
 import { useUserStore } from '@/stores/user';
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 
 
 const userStore = useUserStore();
 const router = useRouter();
+const route = useRoute();
 
 function logout() {
 	userStore.logout()
@@ -25,16 +26,36 @@ function logout() {
         <v-navigation-drawer>
             <v-list>
                 <v-list-item>
-                    <RouterLink :to="{ name: 'home' }">Home</RouterLink>
+                    <RouterLink :to="{ name: 'home' }" class="d-flex ga-1" :class="route.name === 'home' ? 'text-info' : ''">
+						<v-icon icon="mdi-file-send-outline"></v-icon>
+						Разбить на файлы
+					</RouterLink>
                 </v-list-item>
                 <v-list-item>
-                    <RouterLink :to="{ name: 'about' }">About</RouterLink>
+                    <RouterLink :to="{ name: 'whats-app-check' }" class="d-flex ga-1" :class="route.name === 'whats-app-check' ? 'text-info' : ''">
+						<v-icon icon="mdi-whatsapp"></v-icon>
+						Проверить номер в WhatsApp
+					</RouterLink>
+                </v-list-item>
+                <v-list-item>
+                    <RouterLink :to="{ name: 'new-distribution' }" class="d-flex ga-1" :class="route.name === 'new-distribution' ? 'text-info' : ''">
+						<v-icon icon="mdi-message-plus"></v-icon>
+						Создать рассылку
+					</RouterLink>
+                </v-list-item>
+                <v-list-item>
+                    <RouterLink :to="{ name: 'distributions' }" class="d-flex ga-1" :class="route.name === 'distributions' ? 'text-info' : ''">
+						<v-icon icon="mdi-message-reply-text"></v-icon>
+						Список рассылок
+					</RouterLink>
                 </v-list-item>
             </v-list>
         </v-navigation-drawer>
 
-        <v-main class="justify-center d-flex align-center" style="min-height: 300px;">
-            <slot></slot>
+        <v-main>
+			<v-container class="justify-center d-flex">
+				<slot></slot>
+			</v-container>
         </v-main>
     </v-app>
 
