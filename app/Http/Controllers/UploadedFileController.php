@@ -101,11 +101,11 @@ class UploadedFileController extends Controller
             $zip->close();
         }
 
-        // foreach ($files as $file) {
-        //     unlink($file);
-        // }
+        foreach ($files as $file) {
+            unlink($file);
+        }
 
-        // Storage::disk('local')->deleteDirectory($name);
+        Storage::disk('local')->deleteDirectory($name);
 
         // Return the ZIP file as a response
         $name = str($zipFileName)->afterLast('/')->value();

@@ -38,18 +38,15 @@
 			emit('closeArchiveFileModal')
 		})
 		.catch(err => {
-			error.value = err.response?.data?.message ?? err.message
-			// if (!err.response.data) {
-			// 	error.value = err.message
-			// 	return;
-			// }
-			// console.log(err.response.data);
+			if (!err.response.data) {
+				error.value = err.message
+				return;
+			}
 			
-			// err.response.data.text().then((errorText) => {
-			// 	const errorJson = JSON.parse(errorText);
-			// 	error.value = errorJson.message
-			// });
-
+			err.response.data.text().then((errorText) => {
+				const errorJson = JSON.parse(errorText);
+				error.value = errorJson.message
+			});
 		})
 		.finally(() => loading.value = false)
 
@@ -74,12 +71,12 @@
 			<template v-slot:text>
 				<form ref="form">
 					<div class="d-flex ga-2">
-						<v-textarea rows="5" name="text1" label="Приветствие" clearable no-resize class="w-100" hint="123"></v-textarea>
-						<v-textarea rows="5" name="text2" label="Текст2" clearable no-resize class="w-100"></v-textarea>
-						<v-textarea rows="5" name="text3" label="Текст3" clearable no-resize class="w-100"></v-textarea>
+						<v-textarea rows="5" name="text1" label="Приветствие" clearable no-resize class="w-100" hint="Разные варианты можно писать с новой строки"></v-textarea>
+						<v-textarea rows="5" name="text2" label="Текст2" clearable no-resize class="w-100" hint="Разные варианты можно писать с новой строки"></v-textarea>
+						<v-textarea rows="5" name="text3" label="Текст3" clearable no-resize class="w-100" hint="Разные варианты можно писать с новой строки"></v-textarea>
 					</div>
 					<div class="justify-center d-flex">
-						<v-text-field name="number" max-width="500" label="Количество номеров в файле"></v-text-field>
+						<v-text-field name="number" max-width="500" label="Количество номеров в файле" class="mt-4"></v-text-field>
 					</div>
 					<div class="text-center text-danger">{{ error }}</div>
 				</form>
