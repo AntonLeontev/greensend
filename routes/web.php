@@ -45,7 +45,7 @@ Route::middleware(['auth'])
         Route::get('uploaded-files', 'index')->name('uploaded-files.index');
         Route::post('uploaded-files', 'store')->name('uploaded-files.store');
         Route::delete('uploaded-files/{uploadedFile}', 'destroy')->name('uploaded-files.destroy');
-        Route::get('uploaded-files/{uploadedFile}/archive', 'getArchive')->name('uploaded-files.archive');
+        Route::post('uploaded-files/{uploadedFile}/archive', 'getArchive')->name('uploaded-files.archive');
     });
 
 Route::view('reset-password', 'app')->name('password.reset');

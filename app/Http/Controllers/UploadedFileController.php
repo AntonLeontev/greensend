@@ -3,11 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Enums\UploadedFileStatus;
+use App\Http\Requests\GetArchiveRequest;
 use App\Http\Requests\UploadedFileStoreRequest;
 use App\Models\UploadedFile;
 use App\Services\PhonesCleaningService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
+use Spatie\SimpleExcel\SimpleExcelWriter;
+use ZipArchive;
 
 class UploadedFileController extends Controller
 {
@@ -48,5 +52,67 @@ class UploadedFileController extends Controller
         $uploadedFile->delete();
     }
 
-    public function getArchive(UploadedFile $uploadedFile) {}
+    public function getArchive(UploadedFile $uploadedFile, GetArchiveRequest $request)
+    {
+        $file = Storage::get($uploadedFile->result_path);
+
+        $phones = collect(explode("\n", $file))->splice(1);
+
+        $chunks = $phones->chunk($request->get('number'));
+        $text1 = explode("\n", $request->get('text1'));
+        $text2 = explode("\n", $request->get('text2'));
+        $text3 = explode("\n", $request->get('text3'));
+        $files = collect();
+
+        foreach ($chunks as $key => $chunk) {
+            $name = $uploadedFile->label;
+
+            if (Storage::disk('local')->directoryMissing($name)) {
+                Storage::disk('local')->makeDirectory($name);
+            }
+
+            $path = storage_path("app/private/$name/{$name}_".($key + 1).'.xlsx');
+
+            $writer = SimpleExcelWriter::create($path);
+
+            foreach ($chunk as $phone) {
+                if (empty($phone)) {
+                    continue;
+                }
+
+                $messages = [trim(Arr::random($text1)), trim(Arr::random($text2)), trim(Arr::random($text3))];
+
+                $writer->addRow([
+                    'Телефон' => $phone,
+                    'Сообщение' => trim(implode(' ', $messages)),
+                ]);
+            }
+            $files->add($path);
+            $writer->close();
+        }
+
+        $zipFileName = storage_path("app/private/{$name}.zip");
+        $zip = new ZipArchive;
+        if ($zip->open($zipFileName, ZipArchive::CREATE | ZipArchive::OVERWRITE) === true) {
+            foreach ($files as $file) {
+                $fileName = basename($file);
+                $zip->addFile($file, $fileName);
+            }
+            $zip->close();
+        }
+
+        // foreach ($files as $file) {
+        //     unlink($file);
+        // }
+
+        // Storage::disk('local')->deleteDirectory($name);
+
+        // Return the ZIP file as a response
+        $name = str($zipFileName)->afterLast('/')->value();
+
+        return response()->download($zipFileName, $name, [
+            'Content-Type' => 'application/octet-stream',
+            'Content-Disposition' => 'attachment; filename="'.$name.'"',
+        ])->deleteFileAfterSend(true);
+    }
 }

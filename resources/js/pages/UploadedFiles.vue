@@ -1,14 +1,17 @@
 <script setup>
     import AppLayout from '@/layouts/AppLayout.vue';
 	import UploadFileModal from '@/components/UploadFileModal.vue';
-	import {reactive} from "vue";
+	import { reactive, ref } from "vue";
 	import {useToastsStore} from "@/stores/toasts.js"
 	import { useDate } from 'vuetify'
+	import ArchiveFileModal from '@/components/ArchiveFileModal.vue';
 
 	const toastsStore = useToastsStore();
 	const date = useDate()
 
 	const files = reactive([]);
+	const archiveDialog = ref(false);
+	const activeFile = reactive({});
 
 	function getFiles() {
 		axios.get(route('uploaded-files.index'))
@@ -24,6 +27,14 @@
 				files.push(...collection)
 			})
 			.catch(error => toastsStore.addError(error.response?.data?.message ?? error.message))
+	}
+
+	function openArchiveDialog(file) {
+		archiveDialog.value = true;
+		Object.assign(activeFile, file)
+	}
+	function closeArchiveDialog() {
+		archiveDialog.value = false;
 	}
 
 	function downloadArchive(file) {
@@ -87,7 +98,7 @@
 
 									<v-hover>
 										<template v-slot:default="{ isHovering, props }">
-											<v-btn density="compact" icon="mdi-file-download-outline" :color="isHovering ? 'green' : undefined" v-bind="props" title="Скачать подготовленный архив" @click="downloadArchive(file)" />
+											<v-btn density="compact" icon="mdi-file-download-outline" :color="isHovering ? 'green' : undefined" v-bind="props" title="Скачать подготовленный архив" @click="openArchiveDialog(file)" />
 										</template>
 									</v-hover>
 
@@ -104,5 +115,7 @@
 				<div class="text-center pa-2" v-else>Нет загруженных файлов</div>
 			</div>
 		</div>
+
+		<ArchiveFileModal :isActive="archiveDialog" :selectedFile="activeFile" @close-archive-file-modal="closeArchiveDialog" />
     </AppLayout>
 </template>
