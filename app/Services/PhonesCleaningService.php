@@ -29,9 +29,8 @@ class PhonesCleaningService
         $initPhonesCount = 0;
         $resultPhonesCount = 0;
 
-        Storage::put($resultFilePath, '');
-
         $headers = null;
+        $phones = collect();
 
         while (! $file->eof()) {
             $line = $file->fgets();
@@ -68,11 +67,13 @@ class PhonesCleaningService
             $phonesCollection->filter(static function (string $phone) {
                 return str_starts_with($phone, '+79') || str_starts_with($phone, '79');
             })
-                ->each(function ($phone) use ($resultFilePath, &$resultPhonesCount) {
+                ->each(function ($phone) use ($phones, &$resultPhonesCount) {
                     $resultPhonesCount += 1;
-                    Storage::append($resultFilePath, trim($phone, '+'));
+                    $phones->add(trim($phone, '+'));
                 });
         }
+
+        Storage::put($resultFilePath, $phones->unique()->join(PHP_EOL));
 
         return new CleanedPhonesResult($resultFilePath, $initPhonesCount, $resultPhonesCount);
     }
