@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AppController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UploadedFileController;
 use App\Http\Controllers\WhatsAppCheckController;
 use App\Services\Wamm\WammService;
 use Illuminate\Http\Response;
@@ -28,7 +29,6 @@ Route::get('/checkscript2', function () {
 Route::post('/checkscript2', [AppController::class, 'handle2']);
 
 Route::post('login', [AuthController::class, 'login'])->name('login');
-// Route::post('forgot-password', [AuthController::class, 'forgotPassword'])->name('forgot-password');
 Route::get('user', function () {
     if (! auth()->check()) {
         abort(Response::HTTP_UNAUTHORIZED);
@@ -39,8 +39,16 @@ Route::get('user', function () {
 
 Route::post('whats-app-check', WhatsAppCheckController::class);
 
+Route::middleware(['auth'])
+    ->controller(UploadedFileController::class)
+    ->group(function () {
+        Route::get('uploaded-files', 'index')->name('uploaded-files.index');
+        Route::post('uploaded-files', 'store')->name('uploaded-files.store');
+        Route::delete('uploaded-files/{uploadedFile}', 'destroy')->name('uploaded-files.destroy');
+        Route::get('uploaded-files/{uploadedFile}/archive', 'getArchive')->name('uploaded-files.archive');
+    });
+
+Route::view('reset-password', 'app')->name('password.reset');
 Route::fallback(function () {
     return view('app');
 });
-
-Route::view('reset-password', 'app')->name('password.reset');

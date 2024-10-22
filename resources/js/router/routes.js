@@ -5,7 +5,7 @@ import Login from "@/pages/auth/Login.vue";
 export default [
     {
         path: "/",
-        component: () => import("@/pages/FileToArchive.vue"),
+        component: () => import("@/pages/UploadedFiles.vue"),
         name: "home",
         meta: { auth: true },
     },

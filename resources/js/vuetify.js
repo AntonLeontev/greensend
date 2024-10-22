@@ -25,6 +25,11 @@ const vuetify = createVuetify({
             mdi,
         },
     },
+    date: {
+        locale: {
+            en: "ru-RU",
+        },
+    },
 });
 
 export default vuetify;

@@ -17,7 +17,7 @@ function logout() {
 
 <template>
     <v-app>
-        <v-app-bar class="px-2">
+        <v-app-bar class="px-2" image="https://cdn.vuetifyjs.com/images/backgrounds/vbanner.jpg">
 			<span class="text-h4">Greensend</span>
 			<v-spacer></v-spacer>
             <v-btn prepend-icon="mdi-logout" text="Выйти" @click="logout"></v-btn>
