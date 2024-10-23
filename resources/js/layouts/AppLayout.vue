@@ -28,7 +28,7 @@ function logout() {
                 <v-list-item>
                     <RouterLink :to="{ name: 'home' }" class="d-flex ga-1" :class="route.name === 'home' ? 'text-info' : ''">
 						<v-icon icon="mdi-file-send-outline"></v-icon>
-						Разбить на файлы
+						Загрузка файлов
 					</RouterLink>
                 </v-list-item>
                 <v-list-item>
