@@ -5,13 +5,19 @@
 	import {useToastsStore} from "@/stores/toasts.js"
 	import { useDate } from 'vuetify'
 	import ArchiveFileModal from '@/components/ArchiveFileModal.vue';
+	import DistributionDialog from '@/components/DistributionDialog.vue';
 
 	const toastsStore = useToastsStore();
 	const date = useDate()
 
 	const files = reactive([]);
 	const archiveDialog = ref(false);
+	const distributionDialog = ref(false);
 	const activeFile = reactive({});
+
+	
+	getFiles();
+
 
 	function getFiles() {
 		axios.get(route('uploaded-files.index'))
@@ -37,11 +43,13 @@
 		archiveDialog.value = false;
 	}
 
-	function downloadArchive(file) {
-		//
+	function openDistributionDialog(file) {
+		distributionDialog.value = true;
+		Object.assign(activeFile, file)
 	}
-
-	getFiles();
+	function closeDistributionDialog() {
+		distributionDialog.value = false;
+	}
 </script>
 
 <template>
@@ -104,6 +112,12 @@
 
 									<v-hover>
 										<template v-slot:default="{ isHovering, props }">
+											<v-btn density="compact" icon="mdi-multicast" :color="isHovering ? 'green' : undefined" v-bind="props" title="Создать рассылку" @click="openDistributionDialog(file)" />
+										</template>
+									</v-hover>
+
+									<v-hover>
+										<template v-slot:default="{ isHovering, props }">
 											<v-btn density="compact" icon="mdi-trash-can-outline" :color="isHovering ? 'danger' : undefined" v-bind="props" class="ms-4" title="Удалить файл" @click="removeFile(file)" />
 										</template>
 									</v-hover>
@@ -117,5 +131,7 @@
 		</div>
 
 		<ArchiveFileModal :isActive="archiveDialog" :selectedFile="activeFile" @close-archive-file-modal="closeArchiveDialog" />
+
+		<DistributionDialog :isActive="distributionDialog" :selectedFile="activeFile" @close-distribution-dialog="closeDistributionDialog" />
     </AppLayout>
 </template>
