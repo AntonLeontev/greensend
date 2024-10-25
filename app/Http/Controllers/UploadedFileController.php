@@ -58,7 +58,7 @@ class UploadedFileController extends Controller
 
         $phones = collect(explode("\n", $file))->splice(1);
 
-        $chunks = $phones->chunk($request->get('number') - 1);
+        $chunks = $phones->chunk($request->get('number'));
         $text1 = explode("\n", $request->get('text1'));
         $text2 = explode("\n", $request->get('text2'));
         $text3 = explode("\n", $request->get('text3'));
