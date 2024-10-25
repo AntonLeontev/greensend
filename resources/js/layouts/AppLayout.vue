@@ -17,7 +17,7 @@ function logout() {
 
 <template>
     <v-app>
-        <v-app-bar class="px-2 gradient-bg">
+        <v-app-bar class="px-2 gradient">
 			<span class="text-h4">Greensend</span>
 			<v-spacer></v-spacer>
             <v-btn prepend-icon="mdi-logout" text="Выйти" @click="logout"></v-btn>
@@ -63,8 +63,7 @@ function logout() {
 </template>
 
 <style scoped>
-.gradient-bg {
-	 background: rgb(39,46,95);
-	background: linear-gradient(349deg, rgba(39,46,95,1) 0%, rgba(70,103,167,1) 20%, rgba(42,75,162,1) 42%, rgba(36,86,150,1) 60%, rgba(39,46,95,1) 86%); 
+.gradient {
+	background: linear-gradient(349deg, rgba(39,46,95,1) 0%, rgba(70,103,167,1) 20%, rgba(42,75,162,1) 42%, rgba(36,86,150,1) 60%, rgba(39,46,95,1) 86%)!important; 
 }
 </style>
