@@ -38,6 +38,7 @@ Route::get('user', function () {
 });
 
 Route::post('whats-app-check', WhatsAppCheckController::class);
+Route::post('whats-app-check/{uploadedFile}', [WhatsAppCheckController::class, 'checkFile'])->name('whatsapp.check-file');
 
 Route::middleware(['auth'])
     ->controller(UploadedFileController::class)

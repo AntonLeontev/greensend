@@ -50,6 +50,15 @@
 	function closeDistributionDialog() {
 		distributionDialog.value = false;
 	}
+
+	function whatsappCheck(file) {
+		axios.post(route('whatsapp.check-file', file.id))
+			.then(response => {
+				file.status = response.data.status
+				file.whatsapp_check_percent = response.data.whatsapp_check_percent
+			})
+			.catch(error => toastsStore.addError(error.response?.data?.message ?? error.message))
+	}
 </script>
 
 <template>
@@ -85,7 +94,7 @@
 					<tbody>
 						<tr v-for="file in files">
 							<th>{{ file.label }}</th>
-							<th>{{ file.status }}</th>
+							<th>{{ file.status === 'cleaning whatsapp' ? file.whatsapp_check_percent+'%' : file.status }}</th>
 							<th>{{ date.format(file.created_at, 'keyboardDateTime') }}</th>
 							<th>
 								<div class="d-flex ga-2">
@@ -98,11 +107,11 @@
 							</th>
 							<th>
 								<div class="d-flex ga-2">
-									<!-- <v-hover>
+									<v-hover v-if="file.status === 'cleaned'">
 										<template v-slot:default="{ isHovering, props }">
-											<v-btn density="compact" icon="mdi-whatsapp" :color="isHovering ? 'green' : undefined" v-bind="props" title="Проверить наличие номеров в WhatsApp" />
+											<v-btn density="compact" icon="mdi-whatsapp" :color="isHovering ? 'green' : undefined" v-bind="props" title="Проверить наличие номеров в WhatsApp" @click="whatsappCheck(file)" />
 										</template>
-									</v-hover> -->
+									</v-hover>
 
 									<v-hover>
 										<template v-slot:default="{ isHovering, props }">
