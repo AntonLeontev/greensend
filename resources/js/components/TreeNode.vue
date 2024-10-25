@@ -67,6 +67,7 @@ function hasNo() {
 								variant="flat"
 							></v-btn>
 							<v-btn icon="mdi-trash-can-outline" density="compact" v-tooltip:top="'Удалить'"
+								v-if="props.node.parent_id"
 								@click="$emit('deleteNode', props.node.id)"
 								variant="flat"
 							></v-btn>
