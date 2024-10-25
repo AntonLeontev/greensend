@@ -98,11 +98,11 @@
 							</th>
 							<th>
 								<div class="d-flex ga-2">
-									<v-hover>
+									<!-- <v-hover>
 										<template v-slot:default="{ isHovering, props }">
 											<v-btn density="compact" icon="mdi-whatsapp" :color="isHovering ? 'green' : undefined" v-bind="props" title="Проверить наличие номеров в WhatsApp" />
 										</template>
-									</v-hover>
+									</v-hover> -->
 
 									<v-hover>
 										<template v-slot:default="{ isHovering, props }">
