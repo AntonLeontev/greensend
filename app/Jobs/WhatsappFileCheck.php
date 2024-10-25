@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Enums\UploadedFileStatus;
 use App\Models\UploadedFile;
+use App\Services\Wamm\Exceptions\WammException;
 use App\Services\Wamm\WammService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
@@ -32,8 +33,12 @@ class WhatsappFileCheck implements ShouldQueue
         $count = $oldPhones->count();
 
         foreach ($oldPhones as $key => $phone) {
-            if ($wamm->checkPhone($phone)) {
-                $phones->add($phone);
+            try {
+                if ($wamm->checkPhone($phone)) {
+                    $phones->add($phone);
+                }
+            } catch (WammException $e) {
+                //throw $th;
             }
 
             if ($key % 10 === 0) {
