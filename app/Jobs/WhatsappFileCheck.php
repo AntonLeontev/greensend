@@ -26,7 +26,7 @@ class WhatsappFileCheck implements ShouldQueue
      */
     public function handle(WammService $wamm): void
     {
-        $content = Storage::get($this->file->result_path);
+        $content = Storage::read($this->file->result_path);
         $phones = collect();
 
         $oldPhones = str($content)->explode("\n");
@@ -46,10 +46,14 @@ class WhatsappFileCheck implements ShouldQueue
             }
         }
 
-        Storage::write($this->file->result_path, $phones->join("\n"));
+        $newPath = $this->file->result_path.'_whatsapp';
+        Storage::write($newPath, $phones->join("\n"));
+        Storage::delete($this->file->result_path);
+
         $this->file->update([
             'whatsapp_phones_number' => $phones->count(),
             'status' => UploadedFileStatus::CLEANED_WHATSAPP,
+            'result_path' => $newPath,
         ]);
     }
 }
