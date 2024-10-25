@@ -14,7 +14,7 @@ class WhatsappFileCheck implements ShouldQueue
 {
     use Queueable;
 
-    public $timeout = 1200;
+    public $timeout = 1800;
 
     /**
      * Create a new job instance.
@@ -46,10 +46,10 @@ class WhatsappFileCheck implements ShouldQueue
             }
         }
 
+        Storage::write($this->file->result_path, $phones->join("\n"));
         $this->file->update([
             'whatsapp_phones_number' => $phones->count(),
             'status' => UploadedFileStatus::CLEANED_WHATSAPP,
         ]);
-        Storage::write($this->file->result_path, $phones->join("\n"));
     }
 }
