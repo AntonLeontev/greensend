@@ -22,9 +22,9 @@ class GetArchiveRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'text1' => ['required', 'string', 'max:500'],
-            'text2' => ['nullable', 'string', 'max:500'],
-            'text3' => ['nullable', 'string', 'max:500'],
+            'text1' => ['required', 'string', 'max:1000'],
+            'text2' => ['nullable', 'string', 'max:1000'],
+            'text3' => ['nullable', 'string', 'max:1000'],
             'number' => ['required', 'integer', 'min:1'],
         ];
     }
