@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\AppController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ChannelController;
 use App\Http\Controllers\UploadedFileController;
+use App\Http\Controllers\WammController;
 use App\Http\Controllers\WhatsAppCheckController;
 use App\Services\Wamm\WammService;
 use Illuminate\Http\Response;
@@ -10,7 +12,7 @@ use Illuminate\Support\Facades\Route;
 
 if (config('app.url') === 'http://127.0.0.1:8000') {
     Route::get('test', function (WammService $service) {
-        $r = $service->channelList();
+        $r = $service->sendMessage('79126510464', 'Hello world');
 
         dd($r);
     });
@@ -49,7 +51,18 @@ Route::middleware(['auth'])
         Route::post('uploaded-files/{uploadedFile}/archive', 'getArchive')->name('uploaded-files.archive');
     });
 
+Route::middleware(['auth'])
+    ->controller(ChannelController::class)
+    ->group(function () {
+        Route::get('channels', 'index')->name('channels.index');
+        Route::post('channels', 'store')->name('channels.store');
+        Route::delete('channels/{channel}', 'destroy')->name('channels.destroy');
+    });
+
 Route::view('reset-password', 'app')->name('password.reset');
+
+Route::post('webhooks/wamm', WammController::class)->name('webhooks.wamm');
+
 Route::fallback(function () {
     return view('app');
 });

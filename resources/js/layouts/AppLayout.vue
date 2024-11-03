@@ -49,6 +49,12 @@ function logout() {
 						Список рассылок
 					</RouterLink>
                 </v-list-item>
+				<v-list-item>
+                    <RouterLink :to="{ name: 'channels' }" class="d-flex ga-1" :class="route.name === 'channels' ? 'text-info' : ''">
+						<v-icon icon="mdi-order-numeric-ascending"></v-icon>
+						Номера WhatsApp
+					</RouterLink>
+                </v-list-item>
             </v-list>
         </v-navigation-drawer>
 

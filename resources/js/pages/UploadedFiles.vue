@@ -1,5 +1,6 @@
 <script setup>
     import AppLayout from '@/layouts/AppLayout.vue';
+	import CrudPage from '@/components/CrudPage.vue';
 	import UploadFileModal from '@/components/UploadFileModal.vue';
 	import { reactive, ref } from "vue";
 	import {useToastsStore} from "@/stores/toasts.js"
@@ -63,14 +64,11 @@
 
 <template>
     <AppLayout>
-		<div class="w-100">
-			<div class="mb-4 w-100">
+		<CrudPage>
+			<template v-slot:header>
 				<UploadFileModal @file-uploaded="(data) => files.unshift(data.file)" />
-			</div>
-			
-			<v-divider class="mb-3" />
-
-			<div class="">
+			</template>
+			<template v-slot:content>
 				<v-table v-if="files.length > 0">
 					<thead>
 						<tr>
@@ -136,8 +134,8 @@
 					</tbody>
 				</v-table>
 				<div class="text-center pa-2" v-else>Нет загруженных файлов</div>
-			</div>
-		</div>
+			</template>
+		</CrudPage>
 
 		<ArchiveFileModal :isActive="archiveDialog" :selectedFile="activeFile" @close-archive-file-modal="closeArchiveDialog" />
 
