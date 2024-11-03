@@ -6,15 +6,14 @@ use App\Http\Controllers\ChannelController;
 use App\Http\Controllers\UploadedFileController;
 use App\Http\Controllers\WammController;
 use App\Http\Controllers\WhatsAppCheckController;
-use App\Services\Wamm\Enums\Delay;
+use App\Models\Channel;
 use App\Services\Wamm\WammService;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Route;
 
 if (config('app.url') === 'http://127.0.0.1:8000') {
     Route::get('test', function (WammService $service) {
-        $r = $service->sendMessage('79126510464', 'Hello world', Delay::TWENTY_SECONDS);
-        $r = $service->sendMessage('79126510464', 'Hello world2');
+        $r = $service->channelList(Channel::first()->token);
         dd($r);
     });
 }
