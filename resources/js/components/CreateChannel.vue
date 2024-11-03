@@ -38,7 +38,7 @@ import { route } from 'ziggy-js';
         <template v-slot:default="{ isActive }">
             <v-card prepend-icon="mdi-numeric" title="Добавление номера WhatsApp">
                 <template v-slot:text>
-					<div class="mb-2">
+					<div class="mb-6">
 						<v-btn href="/add_channel_instruction.pdf" target="_blank" variant="text" prepend-icon="mdi-information" density="comfortable">Инструкция</v-btn>
 					</div>
                     <form ref="form" @submit.prevent="submit">
@@ -48,8 +48,8 @@ import { route } from 'ziggy-js';
                     </form>
 					<div class="text-center text-danger">{{ error }}</div>
 
-					<div class="">
-						Не забудте указать в настройках Wamm для этого номера вебхук: 
+					<div class="mt-2">
+						Не забудьте указать в настройках Wamm для этого номера вебхук: 
 					</div>
 					<div class="d-flex ga-2 align-center">
 						{{ route('webhooks.wamm') }}
