@@ -2,6 +2,7 @@
 
 namespace App\Services\Wamm;
 
+use App\Services\Wamm\Enums\Delay;
 use Illuminate\Support\Collection;
 
 class WammService
@@ -21,8 +22,8 @@ class WammService
     /**
      * @return int message id
      */
-    public function sendMessage(string $phone, string $text): int
+    public function sendMessage(string $phone, string $text, ?Delay $delay = null, ?int $quoteMessageId = null): int
     {
-        return $this->api->sendMessage($phone, $text)->json('msg_id');
+        return $this->api->sendMessage($phone, $text, $delay, $quoteMessageId)->json('msg_id');
     }
 }

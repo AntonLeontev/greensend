@@ -2,28 +2,39 @@
 
 namespace App\Services\Wamm;
 
+use App\Services\Wamm\Enums\Delay;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 
 class WammApi
 {
-    public function channelList(): Response
+    public function channelList(?string $token = null): Response
     {
-        return Http::wammGet('channel_list');
+        return Http::wammGet('channel_list', [], $token);
     }
 
-    public function checkPhone(string $phone): Response
+    public function checkPhone(string $phone, ?string $token = null): Response
     {
         return Http::wammGet('check_phone', [
             'phone' => $phone,
-        ]);
+        ], $token);
     }
 
-    public function sendMessage(string $phone, string $text): Response
+    public function sendMessage(string $phone, string $text, ?Delay $delay = null, ?int $quoteMessageId = null, ?string $token = null): Response
     {
-        return Http::wammGet('msg_to', [
+        $data = [
             'phone' => $phone,
             'text' => $text,
-        ]);
+        ];
+
+        if ($delay) {
+            $data['delay'] = $delay->value;
+        }
+
+        if ($quoteMessageId) {
+            $data['quote_msg_id'] = $quoteMessageId;
+        }
+
+        return Http::wammGet('msg_to', $data, $token);
     }
 }

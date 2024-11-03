@@ -14,10 +14,14 @@ class HttpServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        Http::macro('wammGet', function (string $method, ?array $query = null) {
+        Http::macro('wammGet', function (string $method, ?array $query = null, ?string $token = null) {
+            if ($token === null) {
+                $token = config('services.wamm.token');
+            }
+
             $response = Http::baseUrl('https://wamm.chat/api2')
                 ->acceptJson()
-                ->get("$method/".config('services.wamm.token'), $query);
+                ->get("$method/$token", $query);
 
             if ($response->json('err') !== 0) {
                 if ($response->json('err') === 'fail execution') {
