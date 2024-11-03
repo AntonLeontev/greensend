@@ -38,6 +38,9 @@ import { route } from 'ziggy-js';
         <template v-slot:default="{ isActive }">
             <v-card prepend-icon="mdi-numeric" title="Добавление номера WhatsApp">
                 <template v-slot:text>
+					<div class="mb-2">
+						<v-btn href="/add_channel_instruction.pdf" target="_blank" variant="text" prepend-icon="mdi-information" density="comfortable">Инструкция</v-btn>
+					</div>
                     <form ref="form" @submit.prevent="submit">
                         <v-text-field clearable label="Номер" name="number"></v-text-field>
                         <v-text-field clearable label="Токен API" name="token"></v-text-field>
@@ -55,8 +58,6 @@ import { route } from 'ziggy-js';
 								<v-btn variant="text" icon="mdi-content-copy" density="comfortable" @click="copyWebhook" :color="isHovering ? 'white' : 'grey'" v-bind="props"></v-btn>
 							</template>
 						</v-hover>
-
-						<v-btn variant="text" icon="mdi-information" density="comfortable" v-tooltip:start="'Инструкция'" class="ms-auto" />
 					</div>
                 </template>
                 <template v-slot:actions>
