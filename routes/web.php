@@ -3,6 +3,7 @@
 use App\Http\Controllers\AppController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ChannelController;
+use App\Http\Controllers\DistributionController;
 use App\Http\Controllers\UploadedFileController;
 use App\Http\Controllers\WammController;
 use App\Http\Controllers\WhatsAppCheckController;
@@ -57,6 +58,14 @@ Route::middleware(['auth'])
         Route::get('channels', 'index')->name('channels.index');
         Route::post('channels', 'store')->name('channels.store');
         Route::delete('channels/{channel}', 'destroy')->name('channels.destroy');
+    });
+
+Route::middleware(['auth'])
+    ->controller(DistributionController::class)
+    ->group(function () {
+        Route::get('distributions', 'index')->name('distributions.index');
+        Route::post('distributions', 'store')->name('distributions.store');
+        Route::delete('distributions/{channel}', 'destroy')->name('distributions.destroy');
     });
 
 Route::view('reset-password', 'app')->name('password.reset');

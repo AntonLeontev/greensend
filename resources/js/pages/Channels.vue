@@ -22,6 +22,7 @@
 		axios.get(route('channels.index'))
 			.then(response => {
 				channels.push(...response.data);
+				sessionStorage.setItem('channels', JSON.stringify(response.data));
 			})
 			.catch(error => toastsStore.addError(error.response?.data?.message ?? error.message))
 	}
@@ -29,8 +30,13 @@
 		axios.delete(route('channels.destroy', channel.id))
 			.then(response => {
 				channels.splice(channels.indexOf(channel), 1);
+				sessionStorage.removeItem('channels');
 			})
 			.catch(error => toastsStore.addError(error.response?.data?.message ?? error.message))
+	}
+	function addChannel(channel) {
+		channels.unshift(channel)
+		sessionStorage.removeItem('channels');
 	}
 </script>
 
@@ -38,7 +44,7 @@
 	<AppLayout>
 		<CrudPage>
 			<template v-slot:header>
-				<CreateChannel @channel-created="(channel) => channels.unshift(channel)" />
+				<CreateChannel @channel-created="addChannel" />
 			</template>
 			<template v-slot:content>
 				<v-table v-if="channels.length > 0">

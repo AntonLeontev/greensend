@@ -1,8 +1,10 @@
 <script setup>
 	import axios from "axios";
-	import { ref, watch } from "vue";
-import DelayedLaunch from "./DelayedLaunch.vue";
-import ConversationTree from "./ConversationTree.vue";
+	import { ref, watch, reactive } from "vue";
+	import DelayedLaunch from "./DelayedLaunch.vue";
+	import ConversationTree from "./ConversationTree.vue";
+	import ChannelSelect from "./ChannelSelect.vue";
+	import { useToastsStore } from "@/stores/toasts" 
 
 	const props = defineProps({
 		isActive: Boolean,
@@ -10,6 +12,7 @@ import ConversationTree from "./ConversationTree.vue";
 	});
 
 	const emit = defineEmits(['closeDistributionDialog']);
+	const toastsStore = useToastsStore();
 
 	watch(
 		() => props.isActive,
@@ -17,32 +20,50 @@ import ConversationTree from "./ConversationTree.vue";
 	)
 
 	const loading = ref(false);
-	const form = ref();
 	const error = ref('');
 	const tab = ref();
-
+	const channels = reactive([]);
+	const conversationTree = ref('');
 
 	const showDialog = ref(props.isActive);
+
+
+	getChannels();
 	
 
-	function createDistribution() {
+	function createDistribution(e) {
 		loading.value = true;
 		error.value = '';
 		
-		// axios.post(
-		// 	route('uploaded-files.archive', props.selectedFile.id),
-		// 	new FormData(form.value),
-		// )
-		// .then(resp => {
-			
-		// 	emit('closeDistributionDialog')
-		// })
-		// .catch(err => {
-		// 	error.value = err.response?.data?.message ?? err.message
-		// })
-		// .finally(() => loading.value = false)
+		axios.post(
+			route('distributions.store'),
+			new FormData(e.target),
+		)
+		.then(resp => {
+			emit('closeDistributionDialog')
+
+			toastsStore.addSuccess('Рассылка поставлена в очередь');
+		})
+		.catch(err => {
+			error.value = err.response?.data?.message ?? err.message
+		})
+		.finally(() => loading.value = false)
 
 		
+	}
+	function getChannels() {
+		if (sessionStorage.getItem('channels')) {
+			channels.push(...JSON.parse(sessionStorage.getItem('channels')));
+			return;
+		}
+
+		axios.get(route('channels.index'))
+			.then(response => {
+				channels.push(...response.data);
+
+				sessionStorage.setItem('channels', JSON.stringify(response.data));
+			})
+			.catch(error => toastsStore.addError(error.response?.data?.message ?? error.message))
 	}
 </script>
 
@@ -50,6 +71,8 @@ import ConversationTree from "./ConversationTree.vue";
 	<v-dialog
 		v-model="showDialog"
 		persistent
+		scrollable
+		max-height="80vh"
 	>
 		<v-card
 			prepend-icon="mdi-multicast"
@@ -64,15 +87,24 @@ import ConversationTree from "./ConversationTree.vue";
 
 				<v-tabs-window v-model="tab">
 					<v-tabs-window-item value="script">
-						<form ref="form">
+						<form @submit.prevent="createDistribution">
 							<input type="hidden" name="uploaded_file_id" :value="selectedFile.id">
 							<input type="hidden" name="type" value="script">
+							<input type="hidden" name="conversation" :value="conversationTree">
 
-							<DelayedLaunch />
+							<div class="justify-between d-flex ga-4">
+								<DelayedLaunch />
+								<div class="w-33">
+									<ChannelSelect :channels="channels" />
+								</div>
+							</div>
 
-							<ConversationTree />
+							<div class="mb-2">Сценарий переписки для рассылки:</div>
+							<ConversationTree @changed="data => conversationTree = JSON.stringify(data)" />
 
-							<div class="text-center text-danger">{{ error }}</div>
+							<div class="my-2 text-center text-danger">{{ error }}</div>
+
+							<v-btn type="submit" text="Создать рассылку" color="info" variant="tonal" class="w-100" :loading="loading" :disabled="loading"></v-btn>
 						</form>
 					</v-tabs-window-item>
 
