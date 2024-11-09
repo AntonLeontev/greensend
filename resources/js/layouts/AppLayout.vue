@@ -37,12 +37,12 @@ function logout() {
 						Проверить номер в WhatsApp
 					</RouterLink>
                 </v-list-item>
-                <v-list-item>
+                <!-- <v-list-item>
                     <RouterLink :to="{ name: 'new-distribution' }" class="d-flex ga-1" :class="route.name === 'new-distribution' ? 'text-info' : ''">
 						<v-icon icon="mdi-message-plus"></v-icon>
 						Создать рассылку
 					</RouterLink>
-                </v-list-item>
+                </v-list-item> -->
                 <v-list-item>
                     <RouterLink :to="{ name: 'distributions' }" class="d-flex ga-1" :class="route.name === 'distributions' ? 'text-info' : ''">
 						<v-icon icon="mdi-message-reply-text"></v-icon>
