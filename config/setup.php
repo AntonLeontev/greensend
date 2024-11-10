@@ -3,7 +3,7 @@
 use Src\ScriptNodes\SendWhatsAppTextMessage;
 
 return [
-    'script_nodes' => [
+    'actions' => [
         SendWhatsAppTextMessage::class,
     ],
 ];

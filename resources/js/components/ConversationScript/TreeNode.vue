@@ -58,9 +58,6 @@ const components = {
 </template>
 
 <style scoped>
-	.text {
-		max-width: 350px;
-	}
 	.children {
 		display: grid;
 		grid-template-rows: 0fr;

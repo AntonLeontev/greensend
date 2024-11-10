@@ -1,6 +1,9 @@
 <script setup>
 import { ref, reactive, nextTick } from "vue"
 import TreeNode from "./TreeNode.vue";
+import { useAppStore } from "@/stores/app";
+
+const appStore = useAppStore();
 
 const emit = defineEmits(['changed']);
 const data = reactive([
@@ -60,11 +63,9 @@ const data = reactive([
 const index = ref(8);
 const deleteNode = ref(false);
 const createNode = ref(false);
-const createMode = ref('root');
 const selectedNode = reactive({});
 
 const storeTextarea = ref(null);
-const updateTextarea = ref(null);
 
 emit('changed', data)
 
@@ -72,11 +73,6 @@ emit('changed', data)
 function openCreateDialog(data) {
 	Object.assign(selectedNode, findNode(data.id))
 	createNode.value = true
-	createMode.value = data.label
-	
-	nextTick(() => {
-		setTimeout(() => storeTextarea.value?.focus(), 100)
-	})
 }
 function openDeleteDialog(id) {
 	Object.assign(selectedNode, findNode(id))
@@ -92,11 +88,19 @@ function updateNode(eventData) {
 function storeNode(e) {
 	let node = findNode(selectedNode.id)
 	let formData = new FormData(e.target)
+	let action = JSON.parse(formData.get('action'))
+
 	let child = {
-		id: index.value++,
-		label: formData.get('label'),
-		text: formData.get('text'),
-		parent_id: node.id,
+		id: ++index.value,
+		condition: formData.get('condition'),
+		action: {
+			type: action.type,
+			class: action.class,
+			data: {
+				text: formData.get('text')
+			},
+		},
+		parentId: node.id,
 		children: [],
 	}
 	node.children.push(child)
@@ -132,6 +136,40 @@ function findNode(id) {
 
 	return recursiveSearch(data)
 }
+
+
+
+const actionSelect = ref(appStore.actions.find(el => el.type === 'SendWhatsAppTextMessage'));
+
+function absentConditions() {
+	if (selectedNode.children?.length === 0) {
+		return appStore.conditions
+	}
+
+	const conditions = [];
+
+	for (const condition of appStore.conditions) {
+		if (selectedNode?.children.some(el => el?.condition === condition.value)) {
+			continue;
+		}
+
+		conditions.push(condition);
+	}
+
+	return conditions;
+}
+function conditionsItemProps(condition) {
+	return {
+	  title: condition.label,
+	  value: condition.value,
+	}
+}
+function actionsItemProps(action) {
+	return {
+	  title: action.title,
+	  value: JSON.stringify(action),
+	}
+}
 </script>
 
 <template>
@@ -151,8 +189,22 @@ function findNode(id) {
 			<v-card title="Добавление сообщения">
 				<template v-slot:text>
 					<form @submit.prevent="storeNode">
-						<input type="hidden" name="label" :value="createMode">
-						<textarea rows="6" class="mb-2 w-100 border-md" name="text" id="store-textarea" ref="storeTextarea"></textarea>
+						<v-select
+							label="Условие ответа" 
+							:items="absentConditions()"
+							:item-props="conditionsItemProps"
+							name="condition"
+							required
+						/>
+						<v-select
+							v-model="actionSelect"
+							label="Действие" 
+							:items="appStore.actions"
+							:item-props="actionsItemProps"
+							name="action"
+							required
+						/>
+						<textarea rows="6" class="mb-2 w-100 border-md" name="text" id="store-textarea" ref="storeTextarea" required></textarea>
 						<v-btn type="submit" text="Сохранить" color="info" variant="tonal" class="w-100"></v-btn>
 					</form>
 				</template>

@@ -72,7 +72,7 @@ Route::middleware(['auth'])
 Route::middleware(['auth'])
     ->controller(ApiController::class)
     ->group(function () {
-        Route::get('api/script-nodes', 'scriptNodes')->name('api.script-nodes');
+        Route::get('api/app-data', 'appData')->name('api.app-data');
     });
 
 Route::view('reset-password', 'app')->name('password.reset');

@@ -10,7 +10,7 @@ const appStore = useAppStore();
 const router = useRouter();
 const route = useRoute();
 
-appStore.loadScriptNodes();
+appStore.loadAppData();
 
 function logout() {
 	userStore.logout()

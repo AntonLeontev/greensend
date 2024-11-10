@@ -1,6 +1,6 @@
 <script setup>
-	import { ref } from "vue";
-import NodeActionButtons from "../NodeActionButtons.vue";
+	import { ref, nextTick } from "vue";
+	import NodeActionButtons from "../NodeActionButtons.vue";
 
 	const props = defineProps({
 		node: Object,
@@ -9,10 +9,18 @@ import NodeActionButtons from "../NodeActionButtons.vue";
 
 	const menuIsOpen = ref(false);
 	const editDialogIsOpen = ref(false);
+	const updateTextarea = ref(null);
 
 	function formatText() {
 		return props.node.action.data.text.replaceAll('\n', '<br>');
 	} 
+	function openEditDialog() {
+		editDialogIsOpen.value = true
+
+		nextTick(() => {
+			setTimeout(() => updateTextarea.value?.focus(), 100)
+		})
+	}
 	function updateNode(e) {
 		let data = props.node.action.data;
 		data.text = new FormData(e.target).get('text')
@@ -25,7 +33,7 @@ import NodeActionButtons from "../NodeActionButtons.vue";
 <template>
 	<div v-html="formatText()" class="text"></div>
 
-	<div class="d-flex" v-click-outside="() => menuIsOpen = false">
+	<div class="d-flex h-min" v-click-outside="() => menuIsOpen = false">
 		<v-btn
 			density="compact"
 			class="d-flex"
@@ -40,7 +48,7 @@ import NodeActionButtons from "../NodeActionButtons.vue";
 				<v-btn icon="mdi-pencil" density="compact" v-tooltip:top="'Изменить текст'"
 					variant="flat"
 					class="me-1"
-					@click="editDialogIsOpen = true"
+					@click="openEditDialog"
 				></v-btn>
 
 				<NodeActionButtons 
@@ -71,3 +79,25 @@ import NodeActionButtons from "../NodeActionButtons.vue";
 		</v-card>
 	</v-dialog>
 </template>
+
+<style scoped>
+	.text {
+		max-width: 350px;
+		display: -webkit-box;
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp: 3; /* Number of lines to show */
+		line-clamp: 3;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	.v-enter-active,
+	.v-leave-active {
+		transition: opacity 0.3s ease;
+	}
+
+	.v-enter-from,
+	.v-leave-to {
+		opacity: 0;
+	}
+</style>

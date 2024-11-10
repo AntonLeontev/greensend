@@ -2,23 +2,26 @@ import { defineStore } from "pinia";
 import { reactive } from "vue";
 
 export const useAppStore = defineStore("app", () => {
-    const scriptNodes = reactive([]);
+    const actions = reactive([]);
+    const conditions = reactive([]);
 
-    function loadScriptNodes() {
-        if (sessionStorage.getItem("scriptNodes")) {
-            scriptNodes.push(
-                ...JSON.parse(sessionStorage.getItem("scriptNodes"))
-            );
+    function loadAppData() {
+        if (sessionStorage.getItem("appData")) {
+            const appData = JSON.parse(sessionStorage.getItem("appData"));
+
+            actions.push(...appData.actions);
+            conditions.push(...appData.conditions);
             return;
         }
 
         axios
-            .get(route("api.script-nodes"))
+            .get(route("api.app-data"))
             .then((response) => {
-                scriptNodes.push(...response.data);
+                actions.push(...response.data.actions);
+                conditions.push(...response.data.conditions);
 
                 sessionStorage.setItem(
-                    "scriptNodes",
+                    "appData",
                     JSON.stringify(response.data)
                 );
             })
@@ -27,5 +30,5 @@ export const useAppStore = defineStore("app", () => {
             });
     }
 
-    return { scriptNodes, loadScriptNodes };
+    return { actions, conditions, loadAppData };
 });

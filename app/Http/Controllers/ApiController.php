@@ -2,18 +2,24 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\ConversationScriptCondition;
 use Illuminate\Http\JsonResponse;
 
 class ApiController extends Controller
 {
-    public function scriptNodes(): JsonResponse
+    public function appData(): JsonResponse
     {
-        $nodes = [];
+        $actions = [];
 
-        foreach (config('setup.script_nodes') as $nodeClass) {
-            $nodes[] = new $nodeClass;
+        foreach (config('setup.actions') as $actionClass) {
+            $actions[] = new $actionClass;
         }
 
-        return response()->json($nodes);
+        $data = [
+            'actions' => $actions,
+            'conditions' => ConversationScriptCondition::toArray(),
+        ];
+
+        return response()->json($data);
     }
 }
