@@ -13,6 +13,7 @@ class Distribution extends Model
     use HasFactory;
 
     protected $fillable = [
+        'name',
         'uploaded_file_id',
         'channel_id',
         'type',

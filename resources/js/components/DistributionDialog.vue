@@ -5,7 +5,9 @@
 	import ConversationTree from "./ConversationScript/ConversationTree.vue";
 	import ChannelSelect from "./ChannelSelect.vue";
 	import { useToastsStore } from "@/stores/toasts" 
+	import { useDate } from "vuetify";
 
+	const date = useDate();
 	const props = defineProps({
 		isActive: Boolean,
 		selectedFile: Object,
@@ -18,18 +20,22 @@
 		() => props.isActive,
 		(value) => showDialog.value = value
 	)
+	watch(
+		() => props.selectedFile.label,
+		(value) => distributionName.value = value + ' | ' + date.format(new Date(), 'keyboardDate')
+	)
 
 	const loading = ref(false);
 	const error = ref('');
 	const tab = ref();
 	const channels = reactive([]);
 	const conversationTree = ref('');
+	const distributionName = ref('');
 
 	const showDialog = ref(props.isActive);
 
 
 	getChannels();
-	
 
 	function createDistribution(e) {
 		loading.value = true;
@@ -91,6 +97,8 @@
 							<input type="hidden" name="uploaded_file_id" :value="selectedFile.id">
 							<input type="hidden" name="type" value="script">
 							<input type="hidden" name="conversation" :value="conversationTree">
+
+							<v-text-field name="name" label="Название" prepend-inner-icon="mdi-label" class="mt-4" clearable v-model="distributionName"></v-text-field>
 
 							<div class="justify-between d-flex ga-4">
 								<DelayedLaunch />

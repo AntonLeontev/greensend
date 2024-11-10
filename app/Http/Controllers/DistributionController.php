@@ -19,6 +19,7 @@ class DistributionController extends Controller
         }
 
         Distribution::create([
+            'name' => $request->get('name'),
             'uploaded_file_id' => $request->get('uploaded_file_id'),
             'type' => $request->get('type'),
             'channel_id' => $request->get('channel_id'),

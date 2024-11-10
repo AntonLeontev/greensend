@@ -11,6 +11,7 @@ class DistributionStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'name' => ['required', 'string', 'max:250'],
             'uploaded_file_id' => ['required', 'integer', 'exists:uploaded_files,id'],
             'type' => ['required', 'string', new Enum(DistributionType::class)],
             'channel_id' => ['required', 'integer', 'exists:channels,id'],
