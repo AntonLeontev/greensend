@@ -1,12 +1,16 @@
 <script setup>
 import Toasts from '@/components/Toasts.vue';
 import { useUserStore } from '@/stores/user';
+import { useAppStore } from '@/stores/app';
 import { useRouter, useRoute } from 'vue-router';
 
 
 const userStore = useUserStore();
+const appStore = useAppStore();
 const router = useRouter();
 const route = useRoute();
+
+appStore.loadScriptNodes();
 
 function logout() {
 	userStore.logout()

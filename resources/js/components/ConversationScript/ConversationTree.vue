@@ -6,12 +6,58 @@ const emit = defineEmits(['changed']);
 const data = reactive([
 	{
 		id: 1,
-		text: 'Здравствуйте!',
-		answers: []
+		action: {
+			type: 'SendWhatsAppTextMessage',
+			class: 'Src\\ScriptNodes\\SendWhatsAppTextMessage',
+			data: {
+				text: 'Здравствуйте!'
+			},
+		},
+		children: [
+			{
+				id: 2,
+				action: {
+					type: 'SendWhatsAppTextMessage',
+					class: 'Src\\ScriptNodes\\SendWhatsAppTextMessage',
+					data: {
+						text: 'ОТвет на да!'
+					},
+				},
+				children: [
+					{
+						id: 4,
+						action: {
+							type: 'SendWhatsAppTextMessage',
+							class: 'Src\\ScriptNodes\\SendWhatsAppTextMessage',
+							data: {
+								text: 'любой ответ!'
+							},
+						},
+						children: [],
+						condition: 'default',
+						parentId: 2,
+					},
+				],
+				condition: 'yes',
+				parentId: 1,
+			},
+			{
+				id: 3,
+				action: {
+					type: 'SendWhatsAppTextMessage',
+					class: 'Src\\ScriptNodes\\SendWhatsAppTextMessage',
+					data: {
+						text: 'Ответ на нет!'
+					},
+				},
+				children: [],
+				condition: 'no',
+				parentId: 1,
+			},
+		]
 	},
 ])
 const index = ref(8);
-const editNode = ref(false);
 const deleteNode = ref(false);
 const createNode = ref(false);
 const createMode = ref('root');
@@ -32,23 +78,14 @@ function openCreateDialog(data) {
 		setTimeout(() => storeTextarea.value?.focus(), 100)
 	})
 }
-function openEditDialog(id) {
-	Object.assign(selectedNode, findNode(id))
-	editNode.value = true
-
-	nextTick(() => {
-		setTimeout(() => updateTextarea.value?.focus(), 100)
-	})
-}
 function openDeleteDialog(id) {
 	Object.assign(selectedNode, findNode(id))
 	deleteNode.value = true
 }
 
-function updateNode(e) {
-	let node = findNode(selectedNode.id)
-	node.text = new FormData(e.target).get('text')
-	editNode.value = false
+function updateNode(eventData) {
+	let node = findNode(eventData.id)
+	node.action.data = eventData.data
 
 	emit('changed', data)
 }
@@ -60,16 +97,16 @@ function storeNode(e) {
 		label: formData.get('label'),
 		text: formData.get('text'),
 		parent_id: node.id,
-		answers: [],
+		children: [],
 	}
-	node.answers.push(child)
+	node.children.push(child)
 	createNode.value = false
 
 	emit('changed', data)
 }
 function destroyNode(e) {
-	let parent = findNode(selectedNode.parent_id)
-	parent.answers = parent.answers.filter(el => el.id !== selectedNode.id)
+	let parent = findNode(selectedNode.parentId)
+	parent.children = parent.children.filter(el => el.id !== selectedNode.id)
 	deleteNode.value = false
 
 	emit('changed', data)
@@ -83,8 +120,8 @@ function findNode(id) {
 				return el;
 			}
 			
-			if (el.answers.length > 0) {
-				let result = recursiveSearch(el.answers)
+			if (el.children.length > 0) {
+				let result = recursiveSearch(el.children)
 
 				if (result) {
 					return result;
@@ -104,30 +141,11 @@ function findNode(id) {
 				v-for="item in data" 
 				:node="item" 
 				@create-node="openCreateDialog"
-				@edit-node="openEditDialog"
+				@node-data-updated="updateNode"
 				@delete-node="openDeleteDialog"
 			/>
 
 		</div>
-
-		<v-dialog v-model="editNode" max-width="500">
-			<v-card title="Редактирование сообщения">
-				<template v-slot:text>
-					<form @submit.prevent="updateNode">
-						<textarea rows="6" :value="selectedNode.text" class="mb-2 w-100 border-md" name="text"  ref="updateTextarea"></textarea>
-						<v-btn type="submit" text="Сохранить" color="info" variant="tonal" class="w-100"></v-btn>
-					</form>
-				</template>
-
-				<template v-slot:actions>
-					<v-btn
-						class="ms-auto"
-						text="Отмена"
-						@click="editNode = false"
-					></v-btn>
-				</template>
-			</v-card>
-		</v-dialog>
 
 		<v-dialog v-model="createNode" max-width="500">
 			<v-card title="Добавление сообщения">

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ApiController;
 use App\Http\Controllers\AppController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ChannelController;
@@ -66,6 +67,12 @@ Route::middleware(['auth'])
         Route::get('distributions', 'index')->name('distributions.index');
         Route::post('distributions', 'store')->name('distributions.store');
         Route::delete('distributions/{channel}', 'destroy')->name('distributions.destroy');
+    });
+
+Route::middleware(['auth'])
+    ->controller(ApiController::class)
+    ->group(function () {
+        Route::get('api/script-nodes', 'scriptNodes')->name('api.script-nodes');
     });
 
 Route::view('reset-password', 'app')->name('password.reset');

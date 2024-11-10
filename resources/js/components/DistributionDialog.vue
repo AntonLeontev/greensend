@@ -2,7 +2,7 @@
 	import axios from "axios";
 	import { ref, watch, reactive } from "vue";
 	import DelayedLaunch from "./DelayedLaunch.vue";
-	import ConversationTree from "./ConversationTree.vue";
+	import ConversationTree from "./ConversationScript/ConversationTree.vue";
 	import ChannelSelect from "./ChannelSelect.vue";
 	import { useToastsStore } from "@/stores/toasts" 
 
