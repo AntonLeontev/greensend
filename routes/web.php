@@ -66,7 +66,7 @@ Route::middleware(['auth'])
     ->group(function () {
         Route::get('distributions', 'index')->name('distributions.index');
         Route::post('distributions', 'store')->name('distributions.store');
-        Route::delete('distributions/{channel}', 'destroy')->name('distributions.destroy');
+        Route::delete('distributions/{distribution}', 'destroy')->name('distributions.destroy');
     });
 
 Route::middleware(['auth'])
