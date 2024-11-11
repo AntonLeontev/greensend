@@ -4,11 +4,23 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\DistributionStoreRequest;
 use App\Models\Distribution;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Carbon;
 
 class DistributionController extends Controller
 {
-    public function index() {}
+    public function index(): JsonResponse|View
+    {
+        if (! request()->ajax()) {
+            return view('app');
+        }
+
+        $distributions = Distribution::orderBy('created_at', 'desc')
+            ->paginate(20);
+
+        return response()->json($distributions);
+    }
 
     public function store(DistributionStoreRequest $request)
     {
