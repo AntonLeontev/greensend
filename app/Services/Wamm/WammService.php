@@ -22,7 +22,7 @@ class WammService
     /**
      * @return int message id
      */
-    public function sendMessage(string $phone, string $text, ?Delay $delay = null, ?int $quoteMessageId = null, ?string $token = null): int
+    public function sendMessage(string $phone, string $text, ?int $delay = null, ?int $quoteMessageId = null, ?string $token = null): int
     {
         return $this->api->sendMessage($phone, $text, $delay, $quoteMessageId, $token)->json('msg_id');
     }

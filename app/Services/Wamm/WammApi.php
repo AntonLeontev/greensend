@@ -20,7 +20,7 @@ class WammApi
         ], $token);
     }
 
-    public function sendMessage(string $phone, string $text, ?Delay $delay = null, ?int $quoteMessageId = null, ?string $token = null): Response
+    public function sendMessage(string $phone, string $text, ?int $delay = null, ?int $quoteMessageId = null, ?string $token = null): Response
     {
         $data = [
             'phone' => $phone,
@@ -28,7 +28,7 @@ class WammApi
         ];
 
         if ($delay) {
-            $data['delay'] = $delay->value;
+            $data['delay'] = $delay;
         }
 
         if ($quoteMessageId) {
