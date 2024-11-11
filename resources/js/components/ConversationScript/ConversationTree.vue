@@ -23,39 +23,12 @@ const data = reactive([
 					type: 'SendWhatsAppTextMessage',
 					class: 'Src\\ScriptNodes\\SendWhatsAppTextMessage',
 					data: {
-						text: 'ОТвет на да!'
+						text: 'Default response!'
 					},
 				},
-				children: [
-					{
-						id: 4,
-						action: {
-							type: 'SendWhatsAppTextMessage',
-							class: 'Src\\ScriptNodes\\SendWhatsAppTextMessage',
-							data: {
-								text: 'любой ответ!'
-							},
-						},
-						children: [],
-						condition: 'default',
-						parentId: 2,
-					},
-				],
-				condition: 'yes',
+				condition: 'default',
 				parentId: 1,
-			},
-			{
-				id: 3,
-				action: {
-					type: 'SendWhatsAppTextMessage',
-					class: 'Src\\ScriptNodes\\SendWhatsAppTextMessage',
-					data: {
-						text: 'Ответ на нет!'
-					},
-				},
 				children: [],
-				condition: 'no',
-				parentId: 1,
 			},
 		]
 	},
