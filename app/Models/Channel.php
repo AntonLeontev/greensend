@@ -25,4 +25,9 @@ class Channel extends Model
     {
         return $this->hasMany(Distribution::class);
     }
+
+    public function chats(): HasMany
+    {
+        return $this->hasMany(Chat::class);
+    }
 }

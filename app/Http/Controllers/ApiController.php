@@ -12,7 +12,7 @@ class ApiController extends Controller
         $actions = [];
 
         foreach (config('setup.actions') as $actionClass) {
-            $actions[] = new $actionClass;
+            $actions[] = $actionClass::serialize();
         }
 
         $data = [

@@ -30,6 +30,11 @@ class Distribution extends Model
         'status' => DistributionStatus::class,
     ];
 
+    public function uploadedFile(): BelongsTo
+    {
+        return $this->belongsTo(UploadedFile::class);
+    }
+
     public function channel(): BelongsTo
     {
         return $this->belongsTo(Channel::class);

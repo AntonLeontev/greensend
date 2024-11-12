@@ -40,7 +40,8 @@ class DistributionController extends Controller
         ]);
     }
 
-    public function destroy(Distribution $distribution) {
-		$distribution->delete();
-	}
+    public function destroy(Distribution $distribution)
+    {
+        $distribution->delete();
+    }
 }
