@@ -24,7 +24,7 @@ class StartScriptDistribution
         }
 
         $distribution->update([
-            'status' => DistributionStatus::PROCESSED,
+            // 'status' => DistributionStatus::PROCESSED,
         ]);
     }
 }

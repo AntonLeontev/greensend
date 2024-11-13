@@ -26,6 +26,9 @@ task('build', function () {
 host('94.241.174.226')
     ->set('remote_user', 'deployer')
     ->set('deploy_path', '~/greensend');
+host('common.greensend.pro')
+    ->set('remote_user', 'deployer')
+    ->set('deploy_path', '~/common-greensend');
 
 // Hooks
 

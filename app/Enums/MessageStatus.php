@@ -7,5 +7,6 @@ enum MessageStatus: string
     case INIT = 'init';
     case SENT = 'sent';
     case RECEIVED = 'received';
-    case VIEWED = 'read';
+    case DELIVERED = 'delivered';
+    case VIEWED = 'viewed';
 }

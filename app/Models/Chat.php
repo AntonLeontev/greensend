@@ -15,6 +15,8 @@ class Chat extends Model
         'phone',
         'channel_id',
         'name',
+        'active_distribution_id',
+        'last_action_id',
     ];
 
     public function channel(): BelongsTo
