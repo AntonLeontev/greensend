@@ -2,6 +2,7 @@
 
 namespace App\Services\Wamm;
 
+use App\Models\Channel;
 use Illuminate\Support\Collection;
 
 class WammService
@@ -15,6 +16,12 @@ class WammService
 
     public function checkPhone(string $phone, ?string $token = null): bool
     {
+        if (! $token) {
+            $channel = Channel::first();
+
+            $token = $channel?->token;
+        }
+
         return $this->api->checkPhone($phone, $token)->json('result') === 'exists';
     }
 
