@@ -117,11 +117,11 @@
 										</template>
 									</v-hover>
 
-									<v-hover>
+									<!-- <v-hover>
 										<template v-slot:default="{ isHovering, props }">
 											<v-btn density="compact" icon="mdi-multicast" :color="isHovering ? 'green' : undefined" v-bind="props" title="Создать рассылку" @click="openDistributionDialog(file)" />
 										</template>
-									</v-hover>
+									</v-hover> -->
 
 									<v-hover>
 										<template v-slot:default="{ isHovering, props }">

@@ -47,12 +47,12 @@ function logout() {
 						Создать рассылку
 					</RouterLink>
                 </v-list-item> -->
-                <v-list-item>
+                <!-- <v-list-item>
                     <RouterLink :to="{ name: 'distributions' }" class="d-flex ga-1" :class="route.name === 'distributions' ? 'text-info' : ''">
 						<v-icon icon="mdi-message-reply-text"></v-icon>
 						Список рассылок
 					</RouterLink>
-                </v-list-item>
+                </v-list-item> -->
 				<v-list-item>
                     <RouterLink :to="{ name: 'channels' }" class="d-flex ga-1" :class="route.name === 'channels' ? 'text-info' : ''">
 						<v-icon icon="mdi-order-numeric-ascending"></v-icon>
