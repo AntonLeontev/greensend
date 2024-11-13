@@ -1,12 +1,16 @@
 <script setup>
 import Toasts from '@/components/Toasts.vue';
 import { useUserStore } from '@/stores/user';
+import { useAppStore } from '@/stores/app';
 import { useRouter, useRoute } from 'vue-router';
 
 
 const userStore = useUserStore();
+const appStore = useAppStore();
 const router = useRouter();
 const route = useRoute();
+
+appStore.loadAppData();
 
 function logout() {
 	userStore.logout()
@@ -37,16 +41,22 @@ function logout() {
 						Проверить номер в WhatsApp
 					</RouterLink>
                 </v-list-item>
-                <v-list-item>
+                <!-- <v-list-item>
                     <RouterLink :to="{ name: 'new-distribution' }" class="d-flex ga-1" :class="route.name === 'new-distribution' ? 'text-info' : ''">
 						<v-icon icon="mdi-message-plus"></v-icon>
 						Создать рассылку
 					</RouterLink>
-                </v-list-item>
+                </v-list-item> -->
                 <v-list-item>
                     <RouterLink :to="{ name: 'distributions' }" class="d-flex ga-1" :class="route.name === 'distributions' ? 'text-info' : ''">
 						<v-icon icon="mdi-message-reply-text"></v-icon>
 						Список рассылок
+					</RouterLink>
+                </v-list-item>
+				<v-list-item>
+                    <RouterLink :to="{ name: 'channels' }" class="d-flex ga-1" :class="route.name === 'channels' ? 'text-info' : ''">
+						<v-icon icon="mdi-order-numeric-ascending"></v-icon>
+						Номера WhatsApp
 					</RouterLink>
                 </v-list-item>
             </v-list>

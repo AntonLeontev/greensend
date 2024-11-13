@@ -27,6 +27,12 @@ export default [
         name: "new-distribution",
         meta: { auth: true },
     },
+    {
+        path: "/channels",
+        component: () => import("@/pages/Channels.vue"),
+        name: "channels",
+        meta: { auth: true },
+    },
     { path: "/login", component: Login, name: "login" },
     {
         path: "/forgot-password",
