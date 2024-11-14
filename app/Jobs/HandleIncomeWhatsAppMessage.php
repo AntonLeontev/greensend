@@ -55,6 +55,7 @@ class HandleIncomeWhatsAppMessage implements ShouldQueue
             'is_incoming' => ! $this->message->fromMe,
             'wamm_message_id' => $this->message->id,
             'status' => MessageStatus::from($this->message->state),
+            'distribution_id' => $chat->active_distribution_id,
         ]);
 
         if ($this->message->fromMe) {

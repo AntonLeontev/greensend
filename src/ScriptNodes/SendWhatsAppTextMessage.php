@@ -58,14 +58,19 @@ final class SendWhatsAppTextMessage implements ShouldQueue
             'text' => $scriptRoot->action->data->text,
             'is_incoming' => false,
             'status' => MessageStatus::INIT,
+            'distribution_id' => $chat->active_distribution_id,
         ]);
 
-        $wammMessageId = $wamm->sendMessage(
-            phone: $this->phone,
-            text: $scriptRoot->action->data->text,
-            delay: $this->data->delay ?? null,
-            token: $channel->token,
-        );
+        try {
+            $wammMessageId = $wamm->sendMessage(
+                phone: $this->phone,
+                text: $scriptRoot->action->data->text,
+                delay: $this->data->delay ?? null,
+                token: $channel->token,
+            );
+        } catch (\Throwable $th) {
+            $this->fail("Не удалось отправить сообщение в Wamm. Message id: {$message->id}. Причина: {$th->getMessage()}");
+        }
 
         $message->update([
             'wamm_message_id' => $wammMessageId,
