@@ -17,6 +17,7 @@ class Message extends Model
         'is_incoming',
         'wamm_message_id',
         'status',
+        'distribution_id',
     ];
 
     protected $casts = [

@@ -8,6 +8,7 @@ use App\Models\Channel;
 use App\Models\Chat;
 use App\Models\Distribution;
 use App\Models\Message;
+use App\Services\ConversationScriptService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 
@@ -23,7 +24,7 @@ class HandleIncomeWhatsAppMessage implements ShouldQueue
     /**
      * Execute the job.
      */
-    public function handle(): void
+    public function handle(ConversationScriptService $conversationScriptService): void
     {
         if ($this->message->fromApi && $this->message->fromMe) {
             return;
@@ -67,7 +68,30 @@ class HandleIncomeWhatsAppMessage implements ShouldQueue
         }
 
         $distribution = Distribution::find($chat->active_distribution_id);
+        $conversation = $distribution->data->conversation;
 
-        // Запустить обработку ответа, если это ответ
+        $lastAction = $conversationScriptService->findAction($chat->last_action_id, $conversation);
+        $nextActions = collect($lastAction->children);
+
+        if ($nextActions->isEmpty()) {
+            $chat->active_distribution_id = null;
+            $chat->save();
+
+            return;
+        }
+
+        if ($nextActions->contains(fn ($el) => $el->condition === 'yes' || $el->condition === 'no')) {
+            //TODO Проверить ответ в gpt
+        }
+
+        if ($nextActions->contains(fn ($el) => $el->condition === 'default')) {
+            $nextAction = $nextActions->first(fn ($el) => $el->condition === 'default');
+
+            $class = $nextAction->action->class;
+            dispatch(new $class($chat->phone, $distribution->id, $nextAction->id, $distribution->channel_id));
+
+            $chat->last_action_id = $nextAction->id;
+            $chat->save();
+        }
     }
 }

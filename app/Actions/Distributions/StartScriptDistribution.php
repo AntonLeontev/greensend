@@ -20,11 +20,11 @@ class StartScriptDistribution
         $phones = explode("\n", $file);
 
         foreach ($phones as $phone) {
-            dispatch(new SendWhatsAppTextMessage($phone, $distribution->id, $distribution->channel_id));
+            dispatch(new SendWhatsAppTextMessage($phone, $distribution->id, 1, $distribution->channel_id));
         }
 
         $distribution->update([
-            // 'status' => DistributionStatus::PROCESSED,
+            'status' => DistributionStatus::PROCESSED,
         ]);
     }
 }

@@ -21,6 +21,7 @@ class StartDistributions extends Command
     {
         $distributions = Distribution::where('starts_at', '<', now())
             ->where('status', DistributionStatus::PENDING)
+            ->with('uploadedFile')
             ->get();
 
         foreach ($distributions as $distribution) {
