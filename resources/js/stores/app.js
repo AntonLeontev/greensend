@@ -6,7 +6,11 @@ export const useAppStore = defineStore("app", () => {
     const conditions = reactive([]);
 
     function loadAppData() {
-        if (sessionStorage.getItem("appData")) {
+		if (actions.length > 0 && conditions.length > 0) {
+            return;
+        }
+
+		if (sessionStorage.getItem("appData")) {
             const appData = JSON.parse(sessionStorage.getItem("appData"));
 
             actions.push(...appData.actions);
