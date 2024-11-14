@@ -62,7 +62,10 @@
 							<td>{{ distribution.name }}</td>
 							<td>{{ date.format(distribution.created_at, 'keyboardDateTime') }}</td>
 							<td>{{ date.format(distribution.starts_at, 'keyboardDateTime') }}</td>
-							<td>{{ distribution.status }}</td>
+							<td>
+								<v-icon icon="mdi-check" color="success" v-if="distribution.status === 'processed'"></v-icon>
+								<v-icon icon="mdi-clock-outline" v-else></v-icon>
+							</td>
 							<td>
 								<div class="d-flex ga-2">
 									<v-hover>
