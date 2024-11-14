@@ -53,6 +53,12 @@ function logout() {
 						Список рассылок
 					</RouterLink>
                 </v-list-item>
+                <v-list-item>
+                    <RouterLink :to="{ name: 'chats' }" class="d-flex ga-1" :class="route.name === 'chats' ? 'text-info' : ''">
+						<v-icon icon="mdi-chat"></v-icon>
+						Чаты
+					</RouterLink>
+                </v-list-item>
 				<v-list-item>
                     <RouterLink :to="{ name: 'channels' }" class="d-flex ga-1" :class="route.name === 'channels' ? 'text-info' : ''">
 						<v-icon icon="mdi-order-numeric-ascending"></v-icon>

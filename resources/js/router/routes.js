@@ -33,6 +33,12 @@ export default [
         name: "channels",
         meta: { auth: true },
     },
+    {
+        path: "/chats",
+        component: () => import("@/pages/Chats.vue"),
+        name: "chats",
+        meta: { auth: true },
+    },
     { path: "/login", component: Login, name: "login" },
     {
         path: "/forgot-password",

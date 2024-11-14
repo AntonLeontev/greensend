@@ -4,6 +4,7 @@ use App\Http\Controllers\ApiController;
 use App\Http\Controllers\AppController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ChannelController;
+use App\Http\Controllers\ChatController;
 use App\Http\Controllers\DistributionController;
 use App\Http\Controllers\UploadedFileController;
 use App\Http\Controllers\WammController;
@@ -13,11 +14,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Route;
 
 if (config('app.url') === 'http://127.0.0.1:8000') {
-    Route::get('test', function (WammService $service) {
-        // $r = $service->sendMessage('79126510464', 'hello');
-        // $r = $service->sendMessage('79126510464', 'hello120', 120);
-        // dd($r);
-    });
+    Route::get('test', function (WammService $service) {});
 }
 
 Route::get('/checkscript', function () {
@@ -67,6 +64,12 @@ Route::middleware(['auth'])
         Route::get('distributions', 'index')->name('distributions.index');
         Route::post('distributions', 'store')->name('distributions.store');
         Route::delete('distributions/{distribution}', 'destroy')->name('distributions.destroy');
+    });
+
+Route::middleware(['auth'])
+    ->controller(ChatController::class)
+    ->group(function () {
+        Route::get('chats', 'index')->name('chats.index');
     });
 
 Route::middleware(['auth'])
