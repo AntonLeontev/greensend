@@ -21,7 +21,7 @@ readonly class WammWhatsAppMessageDTO
     public static function fromWebhookRequest(array $requestData): self
     {
         return new static(
-            $requestData['id'],
+            $requestData['msg_id'],
             (bool) $requestData['from_api'],
             (bool) $requestData['from_me'],
             $requestData['phone_acc'],
