@@ -9,4 +9,5 @@ enum MessageStatus: string
     case RECEIVED = 'received';
     case DELIVERED = 'delivered';
     case VIEWED = 'viewed';
+    case ERROR = 'error';
 }

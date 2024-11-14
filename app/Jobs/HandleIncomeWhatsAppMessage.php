@@ -37,20 +37,15 @@ class HandleIncomeWhatsAppMessage implements ShouldQueue
             return;
         }
 
-        $chat = Chat::where('phone', $this->message->phone)
-            ->where('channel_id', $channel->id)
-            ->first();
-
-        if ($chat === null) {
-            $chat = Chat::create([
-                'channel_id' => $channel->id,
-                'phone' => $this->message->phone,
+        $chat = Chat::firstOrCreate(
+            ['phone' => $this->message->phone, 'channel_id' => $channel->id],
+            [
                 'active_distribution_id' => null,
                 'last_action_id' => null,
-            ]);
-        }
+            ]
+        );
 
-        $message = Message::create([
+        Message::create([
             'chat_id' => $chat->id,
             'text' => $this->message->text,
             'is_incoming' => ! $this->message->fromMe,
@@ -58,6 +53,10 @@ class HandleIncomeWhatsAppMessage implements ShouldQueue
             'status' => MessageStatus::from($this->message->state),
             'distribution_id' => $chat->active_distribution_id,
         ]);
+
+        if ($chat->is_pending_response) {
+            return;
+        }
 
         if ($this->message->fromMe) {
             return;
@@ -86,12 +85,14 @@ class HandleIncomeWhatsAppMessage implements ShouldQueue
 
         if ($nextActions->contains(fn ($el) => $el->condition === 'default')) {
             $nextAction = $nextActions->first(fn ($el) => $el->condition === 'default');
-
-            $class = $nextAction->action->class;
-            dispatch(new $class($chat->phone, $distribution->id, $nextAction->id, $distribution->channel_id));
-
-            $chat->last_action_id = $nextAction->id;
-            $chat->save();
         }
+
+        $chat->update(['is_pending_response' => true]);
+
+        $class = $nextAction->action->class;
+        dispatch(new $class($chat->phone, $distribution->id, $nextAction->id, $distribution->channel_id));
+
+        $chat->last_action_id = $nextAction->id;
+        $chat->save();
     }
 }

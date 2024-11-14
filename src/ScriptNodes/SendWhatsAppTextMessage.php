@@ -70,6 +70,8 @@ final class SendWhatsAppTextMessage implements ShouldQueue
                 token: $channel->token,
             );
         } catch (\Throwable $th) {
+            $message->update(['status' => MessageStatus::ERROR]);
+
             $this->fail("Не удалось отправить сообщение в Wamm. Message id: {$message->id}. Причина: {$th->getMessage()}");
         }
 

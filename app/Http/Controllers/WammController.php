@@ -20,10 +20,16 @@ class WammController extends Controller
             if ($message->status !== $newStatus) {
                 $message->update(['status' => $newStatus]);
             }
+
+            if ($newStatus === MessageStatus::DELIVERED) {
+                $message->chat->update(['is_pending_response' => false]);
+            }
         }
 
         if ($request->json('tip') === 'msg') {
-            dispatch(new HandleIncomeWhatsAppMessage(WammWhatsAppMessageDTO::fromWebhookRequest($request->json('msg_data'))));
+            $message = WammWhatsAppMessageDTO::fromWebhookRequest($request->json('msg_data'));
+
+            dispatch_sync(new HandleIncomeWhatsAppMessage($message));
         }
     }
 }

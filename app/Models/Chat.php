@@ -17,6 +17,11 @@ class Chat extends Model
         'name',
         'active_distribution_id',
         'last_action_id',
+        'is_pending_response',
+    ];
+
+    protected $casts = [
+        'is_pending_response' => 'boolean',
     ];
 
     public function channel(): BelongsTo
