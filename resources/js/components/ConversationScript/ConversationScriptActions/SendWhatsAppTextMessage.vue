@@ -31,33 +31,27 @@
 </script>
 
 <template>
-	<div v-html="formatText()" class="text"></div>
+	<div class="d-flex ga-2" @mouseenter="menuIsOpen = true" @mouseleave="menuIsOpen = false">
+		<div v-html="formatText()" class="text"></div>
 
-	<div class="d-flex h-min" v-click-outside="() => menuIsOpen = false">
-		<v-btn
-			density="compact"
-			class="d-flex"
-			icon="mdi-dots-vertical"
-			variant="plain"
-			@click="menuIsOpen = !menuIsOpen"
-		></v-btn>
+		<div class="d-flex h-min">
+			<Transition>
+				<div class="d-flex ga-1" v-if="menuIsOpen">
+					
+					<v-btn icon="mdi-pencil" density="compact" v-tooltip:top="'Изменить текст'"
+						variant="flat"
+						class="me-1"
+						@click="openEditDialog"
+					></v-btn>
 
-		<Transition>
-			<div class="d-flex ga-1" v-if="menuIsOpen">
-				
-				<v-btn icon="mdi-pencil" density="compact" v-tooltip:top="'Изменить текст'"
-					variant="flat"
-					class="me-1"
-					@click="openEditDialog"
-				></v-btn>
-
-				<NodeActionButtons 
-					:node="props.node" 
-					@create-node="(data) => $emit('createNode', data)"
-					@delete-node="(id) => $emit('deleteNode', id)"
-				/>
-			</div>
-		</Transition>
+					<NodeActionButtons 
+						:node="props.node" 
+						@create-node="(data) => $emit('createNode', data)"
+						@delete-node="(id) => $emit('deleteNode', id)"
+					/>
+				</div>
+			</Transition>
+		</div>
 	</div>
 
 	<v-dialog v-model="editDialogIsOpen" max-width="500">
