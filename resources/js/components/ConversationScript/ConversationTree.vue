@@ -13,7 +13,7 @@ const data = reactive([
 			type: 'SendWhatsAppTextMessage',
 			class: 'Src\\ScriptNodes\\SendWhatsAppTextMessage',
 			data: {
-				text: 'Здравствуйте!'
+				text: 'Здравствуйте!',
 			},
 		},
 		children: [

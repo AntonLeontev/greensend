@@ -66,7 +66,7 @@ final class SendWhatsAppTextMessage implements ShouldQueue
             $wammMessageId = $wamm->sendMessage(
                 phone: $this->phone,
                 text: $scriptNode->action->data->text,
-                delay: $this->data->delay ?? null,
+                delay: $scriptNode->action->data->delay ?? 30,
                 token: $channel->token,
             );
         } catch (\Throwable $th) {
