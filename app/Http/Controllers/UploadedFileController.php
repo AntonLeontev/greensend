@@ -56,16 +56,17 @@ class UploadedFileController extends Controller
     {
         $file = Storage::get($uploadedFile->result_path);
 
-        $phones = collect(explode("\n", $file))->splice(1);
+        $phones = collect(explode("\n", $file));
 
         $chunks = $phones->chunk($request->get('number'));
+
         $text1 = explode("\n", $request->get('text1'));
         $text2 = explode("\n", $request->get('text2'));
         $text3 = explode("\n", $request->get('text3'));
         $files = collect();
 
+        $name = $uploadedFile->label;
         foreach ($chunks as $key => $chunk) {
-            $name = $uploadedFile->label;
 
             if (Storage::disk('local')->directoryMissing($name)) {
                 Storage::disk('local')->makeDirectory($name);
@@ -113,6 +114,6 @@ class UploadedFileController extends Controller
         return response()->download($zipFileName, $name, [
             'Content-Type' => 'application/octet-stream',
             'Content-Disposition' => 'attachment; filename="'.$name.'"',
-        ])->deleteFileAfterSend(true);
+        ])->deleteFileAfterSend(false);
     }
 }
