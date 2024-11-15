@@ -199,7 +199,7 @@ return [
             'ignore_status_codes' => [],
         ],
 
-        Watchers\ScheduleWatcher::class => env('TELESCOPE_SCHEDULE_WATCHER', true),
-        Watchers\ViewWatcher::class => env('TELESCOPE_VIEW_WATCHER', true),
+        Watchers\ScheduleWatcher::class => env('TELESCOPE_SCHEDULE_WATCHER', false),
+        Watchers\ViewWatcher::class => env('TELESCOPE_VIEW_WATCHER', false),
     ],
 ];
