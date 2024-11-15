@@ -42,6 +42,7 @@ class HandleIncomeWhatsAppMessage implements ShouldQueue
             [
                 'active_distribution_id' => null,
                 'last_action_id' => null,
+                'name' => $this->message->phone,
             ]
         );
 
