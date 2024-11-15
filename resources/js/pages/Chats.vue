@@ -29,9 +29,9 @@
 	<AppLayout>
 		 <v-navigation-drawer class="w-25">
 			<v-list>
-				<v-hover>
+				<v-hover v-for="chat in chats">
 					<template v-slot:default="{ isHovering, props }">
-						<v-list-item v-for="chat in chats"
+						<v-list-item
 							class="cursor-pointer border-b-thin border-t-thin"
 							:class="isHovering ? 'bg-light-blue-darken-4' : ''"
 							:title="chat.name"
