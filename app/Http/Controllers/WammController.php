@@ -15,6 +15,10 @@ class WammController extends Controller
         if ($request->json('tip') === 'msg_state') {
             $message = Message::where('wamm_message_id', $request->json('msg_data.msg_id'))->first();
 
+            if ($message === null) {
+                return;
+            }
+
             $newStatus = MessageStatus::from($request->json('msg_data.state'));
 
             if ($message->status !== $newStatus) {
