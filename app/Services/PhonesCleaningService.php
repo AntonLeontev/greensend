@@ -14,6 +14,7 @@ class PhonesCleaningService
         $headers = explode(';', $line);
         $headers = Arr::map($headers, static fn ($item) => trim($item));
         $headers = Arr::map($headers, static fn ($item) => trim($item, "\u{FEFF}"));
+        $headers = Arr::map($headers, static fn ($item) => mb_strtolower($item));
 
         return $headers;
     }
@@ -60,7 +61,15 @@ class PhonesCleaningService
                 ->trim()
                 ->trim('=')
                 ->trim('"')
-                ->explode(', ');
+                ->explode(', ')
+                ->map(static function ($phone) {
+                    $phone = preg_replace('~\D~', '', $phone);
+                    if (str_starts_with($phone, '89')) {
+                        $phone[0] = '7';
+                    }
+
+                    return $phone;
+                });
 
             $initPhonesCount += $phonesCollection->count();
 
