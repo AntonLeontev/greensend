@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\DTO\WammWhatsAppMessageDTO;
+use App\Enums\DistributionType;
 use App\Enums\MessageStatus;
 use App\Models\Channel;
 use App\Models\Chat;
@@ -71,32 +72,39 @@ class HandleIncomeWhatsAppMessage implements ShouldQueue
         }
 
         $distribution = Distribution::find($chat->active_distribution_id);
-        $conversation = $distribution->data->conversation;
 
-        $lastAction = $conversationScriptService->findAction($chat->last_action_id, $conversation);
-        $nextActions = collect($lastAction->children);
+        if ($distribution->type === DistributionType::SCRIPT) {
+            $conversation = $distribution->data->conversation;
 
-        if ($nextActions->contains(fn ($el) => $el->condition === 'yes' || $el->condition === 'no')) {
-            $condition = $openai->determineAnswerType($lastAction->action->data->text, $this->message->text);
+            $lastAction = $conversationScriptService->findAction($chat->last_action_id, $conversation);
+            $nextActions = collect($lastAction->children);
 
-            $nextAction = $nextActions->first(fn ($el) => $el->condition === $condition->value);
-        } else {
-            $nextAction = $nextActions->first(fn ($el) => $el->condition === 'default');
-        }
+            if ($nextActions->contains(fn ($el) => $el->condition === 'yes' || $el->condition === 'no')) {
+                $condition = $openai->determineAnswerType($lastAction->action->data->text, $this->message->text);
 
-        if ($nextAction === null) {
-            $chat->active_distribution_id = null;
+                $nextAction = $nextActions->first(fn ($el) => $el->condition === $condition->value);
+            } else {
+                $nextAction = $nextActions->first(fn ($el) => $el->condition === 'default');
+            }
+
+            if ($nextAction === null) {
+                $chat->active_distribution_id = null;
+                $chat->save();
+
+                return;
+            }
+
+            $chat->update(['is_pending_response' => true]);
+
+            $class = $nextAction->action->class;
+            dispatch(new $class($chat->phone, $distribution->id, $nextAction->id, $distribution->channel_id));
+
+            $chat->last_action_id = $nextAction->id;
             $chat->save();
-
-            return;
         }
 
-        $chat->update(['is_pending_response' => true]);
-
-        $class = $nextAction->action->class;
-        dispatch(new $class($chat->phone, $distribution->id, $nextAction->id, $distribution->channel_id));
-
-        $chat->last_action_id = $nextAction->id;
-        $chat->save();
+        if ($distribution->type === DistributionType::AI) {
+            // code...
+        }
     }
 }
