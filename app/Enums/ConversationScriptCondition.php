@@ -11,14 +11,14 @@ enum ConversationScriptCondition: string
     public static function toArray(): array
     {
         return [
-            // [
-            //     'value' => self::YES,
-            //     'label' => 'Положительный ответ',
-            // ],
-            // [
-            //     'value' => self::NO,
-            //     'label' => 'Отрицательный ответ',
-            // ],
+            [
+                'value' => self::YES,
+                'label' => 'Положительный ответ',
+            ],
+            [
+                'value' => self::NO,
+                'label' => 'Отрицательный ответ',
+            ],
             [
                 'value' => self::DEFAULT,
                 'label' => 'Ответ по-умолчанию',

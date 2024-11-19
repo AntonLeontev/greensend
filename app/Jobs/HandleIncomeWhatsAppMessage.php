@@ -9,6 +9,7 @@ use App\Models\Chat;
 use App\Models\Distribution;
 use App\Models\Message;
 use App\Services\ConversationScriptService;
+use App\Services\OpenAI\OpenAIService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 
@@ -24,8 +25,10 @@ class HandleIncomeWhatsAppMessage implements ShouldQueue
     /**
      * Execute the job.
      */
-    public function handle(ConversationScriptService $conversationScriptService): void
-    {
+    public function handle(
+        ConversationScriptService $conversationScriptService,
+        OpenAIService $openai,
+    ): void {
         if ($this->message->fromApi && $this->message->fromMe) {
             return;
         }
@@ -73,19 +76,19 @@ class HandleIncomeWhatsAppMessage implements ShouldQueue
         $lastAction = $conversationScriptService->findAction($chat->last_action_id, $conversation);
         $nextActions = collect($lastAction->children);
 
-        if ($nextActions->isEmpty()) {
+        if ($nextActions->contains(fn ($el) => $el->condition === 'yes' || $el->condition === 'no')) {
+            $condition = $openai->determineAnswerType($lastAction->action->data->text, $this->message->text);
+
+            $nextAction = $nextActions->first(fn ($el) => $el->condition === $condition->value);
+        } else {
+            $nextAction = $nextActions->first(fn ($el) => $el->condition === 'default');
+        }
+
+        if ($nextAction === null) {
             $chat->active_distribution_id = null;
             $chat->save();
 
             return;
-        }
-
-        if ($nextActions->contains(fn ($el) => $el->condition === 'yes' || $el->condition === 'no')) {
-            //TODO Проверить ответ в gpt
-        }
-
-        if ($nextActions->contains(fn ($el) => $el->condition === 'default')) {
-            $nextAction = $nextActions->first(fn ($el) => $el->condition === 'default');
         }
 
         $chat->update(['is_pending_response' => true]);

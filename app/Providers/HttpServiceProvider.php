@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use App\Services\OpenAI\Exceptions\OpenAIException;
 use App\Services\Wamm\Exceptions\WammException;
 use App\Services\Wamm\Exceptions\WammFailExecution;
+use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\ServiceProvider;
 
@@ -34,17 +36,15 @@ class HttpServiceProvider extends ServiceProvider
             return $response;
         });
 
-        Http::macro('wammPost', function (string $method, ?array $data = null) {
-            $response = Http::baseUrl('https://wamm.chat/api2')
+        Http::macro('openai', function () {
+            return Http::withHeaders(['Authorization' => 'Bearer '.config('services.openai.token')])
+                ->timeout(60)
                 ->asJson()
                 ->acceptJson()
-                ->post("$method/".config('services.wamm.token'), $data);
-
-            if ($response->json('err') !== 0) {
-                throw new WammException($response->json('err'));
-            }
-
-            return $response;
+                ->baseUrl('https://api.openai.com/v1')
+                ->throw(function (Response $response) {
+                    throw new OpenAIException($response);
+                });
         });
     }
 

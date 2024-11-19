@@ -9,12 +9,20 @@ use App\Http\Controllers\DistributionController;
 use App\Http\Controllers\UploadedFileController;
 use App\Http\Controllers\WammController;
 use App\Http\Controllers\WhatsAppCheckController;
-use App\Services\Wamm\WammService;
+use App\Services\OpenAI\OpenAIService;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Route;
 
 if (config('app.url') === 'http://127.0.0.1:8000') {
-    Route::get('test', function (WammService $service) {});
+    Route::get('test', function (OpenAIService $service) {
+
+        $condition = $service->determineAnswerType(
+            'Здравствуйте! Рассказать про наш магазин?',
+            'зайчик',
+        );
+
+        dd($condition);
+    });
 }
 
 Route::get('/checkscript', function () {
