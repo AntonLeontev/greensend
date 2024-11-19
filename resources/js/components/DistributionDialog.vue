@@ -34,6 +34,8 @@
 
 	const showDialog = ref(props.isActive);
 
+	watch(tab, () => error.value = '')
+
 
 	getChannels();
 
@@ -117,13 +119,25 @@
 					</v-tabs-window-item>
 
 					<v-tabs-window-item value="ai">
-						<form ref="form">
+						<form @submit.prevent="createDistribution">
 							<input type="hidden" name="uploaded_file_id" :value="selectedFile.id">
 							<input type="hidden" name="type" value="ai">
+
+							<v-text-field name="name" label="Название" prepend-inner-icon="mdi-label" class="mt-4" clearable v-model="distributionName"></v-text-field>
 							
-							<DelayedLaunch />
+							<div class="justify-between d-flex ga-4">
+								<DelayedLaunch />
+								<div class="w-33">
+									<ChannelSelect :channels="channels" />
+								</div>
+							</div>
+
+							<v-textarea name="first_message" label="Первое сообщение в рассылке" clearable></v-textarea>
+							<v-textarea name="system_message" label="System message (отправляется в gpt)" clearable></v-textarea>
 
 							<div class="text-center text-danger">{{ error }}</div>
+
+							<v-btn type="submit" text="Создать рассылку" color="info" variant="tonal" class="w-100" :loading="loading" :disabled="loading"></v-btn>
 						</form>
 					</v-tabs-window-item>
 				</v-tabs-window>

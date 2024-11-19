@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Actions\Distributions\StartAiDistribution;
 use App\Actions\Distributions\StartScriptDistribution;
 use App\Enums\DistributionStatus;
 use App\Enums\DistributionType;
@@ -17,7 +18,7 @@ class StartDistributions extends Command
      */
     protected $signature = 'app:start-distributions';
 
-    public function handle(StartScriptDistribution $startScriptDistribution)
+    public function handle(StartScriptDistribution $startScriptDistribution, StartAiDistribution $startAiDistribution)
     {
         $distributions = Distribution::where('starts_at', '<', now())
             ->where('status', DistributionStatus::PENDING)
@@ -27,6 +28,10 @@ class StartDistributions extends Command
         foreach ($distributions as $distribution) {
             if ($distribution->type === DistributionType::SCRIPT) {
                 $startScriptDistribution->handle($distribution);
+            }
+
+            if ($distribution->type === DistributionType::AI) {
+                $startAiDistribution->handle($distribution);
             }
         }
     }

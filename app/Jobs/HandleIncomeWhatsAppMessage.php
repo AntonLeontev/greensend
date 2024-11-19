@@ -11,6 +11,7 @@ use App\Models\Distribution;
 use App\Models\Message;
 use App\Services\ConversationScriptService;
 use App\Services\OpenAI\OpenAIService;
+use App\Services\Wamm\WammService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 
@@ -29,6 +30,7 @@ class HandleIncomeWhatsAppMessage implements ShouldQueue
     public function handle(
         ConversationScriptService $conversationScriptService,
         OpenAIService $openai,
+        WammService $wamm,
     ): void {
         if ($this->message->fromApi && $this->message->fromMe) {
             return;
@@ -97,14 +99,59 @@ class HandleIncomeWhatsAppMessage implements ShouldQueue
             $chat->update(['is_pending_response' => true]);
 
             $class = $nextAction->action->class;
-            dispatch(new $class($chat->phone, $distribution->id, $nextAction->id, $distribution->channel_id));
+            dispatch(new $class($chat->phone, $distribution->id, $nextAction->id));
 
             $chat->last_action_id = $nextAction->id;
             $chat->save();
         }
 
         if ($distribution->type === DistributionType::AI) {
-            // code...
+            $chat->update(['is_pending_response' => true]);
+
+            $messagesForSend = collect();
+
+            $messagesForSend->push([
+                'role' => 'system',
+                'content' => $distribution->data->system_message,
+            ]);
+
+            $messages = Message::where('distribution_id', $distribution->id)
+                ->get();
+
+            foreach ($messages as $message) {
+                $messagesForSend->push([
+                    'role' => $message->is_incoming ? 'user' : 'assistant',
+                    'content' => $message->text,
+                ]);
+            }
+
+            $answer = $openai->chatComplete($messagesForSend);
+
+            $message = Message::create([
+                'chat_id' => $chat->id,
+                'text' => $answer,
+                'is_incoming' => false,
+                'distribution_id' => $distribution->id,
+                'status' => MessageStatus::INIT,
+            ]);
+
+            try {
+                $wammMessageId = $wamm->sendMessage(
+                    phone: $chat->phone,
+                    text: $answer,
+                    delay: 10,
+                    token: $channel->token,
+                );
+            } catch (\Throwable $th) {
+                $message->update(['status' => MessageStatus::ERROR]);
+
+                $this->fail("Не удалось отправить сообщение в Wamm. Message id: {$message->id}. Причина: {$th->getMessage()}");
+            }
+
+            $message->update([
+                'wamm_message_id' => $wammMessageId,
+                'status' => MessageStatus::SENT,
+            ]);
         }
     }
 }

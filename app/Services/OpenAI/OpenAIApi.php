@@ -5,6 +5,7 @@ namespace App\Services\OpenAI;
 use App\Services\OpenAI\Enums\Model;
 use App\Services\OpenAI\Schemas\ResponseFormat;
 use Illuminate\Http\Client\Response;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 
 class OpenAIApi
@@ -25,18 +26,33 @@ class OpenAIApi
         int|float $frequencyPenalty = 2,
         ?ResponseFormat $responseFormat = null,
     ): Response {
+        $messages = [
+            [
+                'role' => 'system',
+                'content' => $systemMessage,
+            ],
+            [
+                'role' => 'user',
+                'content' => $userMessage,
+            ],
+        ];
+
+        return self::chat($messages, $model, $temperature, $n, $maxTokens, $presencePenalty, $frequencyPenalty, $responseFormat);
+    }
+
+    public static function chat(
+        Collection|array $messages,
+        Model $model,
+        int|float $temperature = 1.3,
+        int $n = 1,
+        int|float $maxTokens = 1000,
+        int|float $presencePenalty = 2,
+        int|float $frequencyPenalty = 2,
+        ?ResponseFormat $responseFormat = null,
+    ): Response {
         $data = [
             'model' => $model->value,
-            'messages' => [
-                [
-                    'role' => 'system',
-                    'content' => $systemMessage,
-                ],
-                [
-                    'role' => 'user',
-                    'content' => $userMessage,
-                ],
-            ],
+            'messages' => $messages,
             'temperature' => $temperature,
             'n' => $n,
             'max_tokens' => $maxTokens,

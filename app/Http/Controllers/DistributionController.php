@@ -30,13 +30,22 @@ class DistributionController extends Controller
             $startsAt = Carbon::now();
         }
 
+        if ($request->get('type') === 'script') {
+            $data = ['conversation' => json_decode($request->get('conversation'), true)];
+        } elseif ($request->get('type') === 'ai') {
+            $data = [
+                'first_message' => $request->get('first_message'),
+                'system_message' => $request->get('system_message'),
+            ];
+        }
+
         Distribution::create([
             'name' => $request->get('name'),
             'uploaded_file_id' => $request->get('uploaded_file_id'),
             'type' => $request->get('type'),
             'channel_id' => $request->get('channel_id'),
             'starts_at' => $startsAt,
-            'data' => ['conversation' => json_decode($request->get('conversation'), true)],
+            'data' => $data,
         ]);
     }
 

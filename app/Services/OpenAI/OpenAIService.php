@@ -4,8 +4,10 @@ namespace App\Services\OpenAI;
 
 use App\Enums\ConversationScriptCondition;
 use App\Services\OpenAI\Enums\Model;
+use App\Services\OpenAI\Schemas\ChatComplete;
 use App\Services\OpenAI\Schemas\DetectAnswerType;
 use App\Services\OpenAI\Schemas\ResponseFormat;
+use Illuminate\Support\Collection;
 
 class OpenAIService
 {
@@ -48,5 +50,13 @@ class OpenAIService
         $condition = ConversationScriptCondition::tryFrom($type);
 
         return $condition ?? ConversationScriptCondition::DEFAULT;
+    }
+
+    public function chatComplete(Collection|array $messages): string
+    {
+        $response = $this->api->chat($messages, Model::GPT_4O_MINI, responseFormat: new ChatComplete)
+            ->object();
+
+        return json_decode($response->choices[0]->message->content)->answer;
     }
 }

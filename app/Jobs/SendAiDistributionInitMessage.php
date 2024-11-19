@@ -1,39 +1,32 @@
 <?php
 
-namespace Src\ScriptNodes;
+namespace App\Jobs;
 
 use App\Enums\MessageStatus;
 use App\Models\Channel;
 use App\Models\Chat;
 use App\Models\Distribution;
 use App\Models\Message;
-use App\Services\ConversationScriptService;
 use App\Services\Wamm\WammService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 
-final class SendWhatsAppTextMessage implements ShouldQueue
+class SendAiDistributionInitMessage implements ShouldQueue
 {
     use Queueable;
 
-    public function __construct(private string $phone, private int $distributionId, private int $nodeId) {}
+    /**
+     * Create a new job instance.
+     */
+    public function __construct(public string $phone, public int $distributionId) {}
 
-    public static function title(): string
-    {
-        return 'Отправить текстовое сообщение WhatsApp';
-    }
-
-    public static function type(): string
-    {
-        return 'SendWhatsAppTextMessage';
-    }
-
-    public function handle(WammService $wamm, ConversationScriptService $conversationScriptService): void
+    /**
+     * Execute the job.
+     */
+    public function handle(WammService $wamm): void
     {
         $distribution = Distribution::find($this->distributionId);
         $channel = Channel::find($distribution->channel_id);
-
-        $scriptNode = $conversationScriptService->findAction($this->nodeId, $distribution->data->conversation);
 
         $chat = Chat::where('channel_id', $channel->id)
             ->where('phone', $this->phone)
@@ -42,7 +35,6 @@ final class SendWhatsAppTextMessage implements ShouldQueue
         if ($chat) {
             $chat->update([
                 'active_distribution_id' => $this->distributionId,
-                'last_action_id' => $scriptNode->id,
             ]);
         } else {
             $chat = Chat::create([
@@ -50,13 +42,12 @@ final class SendWhatsAppTextMessage implements ShouldQueue
                 'phone' => $this->phone,
                 'name' => $this->phone,
                 'active_distribution_id' => $this->distributionId,
-                'last_action_id' => $scriptNode->id,
             ]);
         }
 
         $message = Message::create([
             'chat_id' => $chat->id,
-            'text' => $scriptNode->action->data->text,
+            'text' => $distribution->data->first_message,
             'is_incoming' => false,
             'status' => MessageStatus::INIT,
             'distribution_id' => $chat->active_distribution_id,
@@ -65,8 +56,8 @@ final class SendWhatsAppTextMessage implements ShouldQueue
         try {
             $wammMessageId = $wamm->sendMessage(
                 phone: $this->phone,
-                text: $scriptNode->action->data->text,
-                delay: $scriptNode->action->data->delay ?? 30,
+                text: $distribution->data->first_message,
+                delay: 30,
                 token: $channel->token,
             );
         } catch (\Throwable $th) {
@@ -79,14 +70,5 @@ final class SendWhatsAppTextMessage implements ShouldQueue
             'wamm_message_id' => $wammMessageId,
             'status' => MessageStatus::SENT,
         ]);
-    }
-
-    public static function serialize(): array
-    {
-        return [
-            'type' => self::type(),
-            'class' => self::class,
-            'title' => self::title(),
-        ];
     }
 }
