@@ -106,6 +106,14 @@ class HandleIncomeWhatsAppMessage implements ShouldQueue
         }
 
         if ($distribution->type === DistributionType::AI) {
+			$messagesCount = Message::where('distribution_id', $distribution->id)
+				->where('chat_id', $chat->id)
+				->count();
+
+			if ($messagesCount >= 30) {
+				return;
+			}
+
             $chat->update(['is_pending_response' => true]);
 
             $messagesForSend = collect();
