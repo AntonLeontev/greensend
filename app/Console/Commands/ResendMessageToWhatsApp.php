@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Enums\MessageStatus;
 use App\Models\Message;
 use App\Services\Wamm\WammService;
 use Illuminate\Console\Command;
@@ -23,11 +24,16 @@ class ResendMessageToWhatsApp extends Command
         $chat = $message->chat;
         $channel = $chat->channel;
 
-        $wamm->sendMessage(
+        $wammMessageId = $wamm->sendMessage(
             phone: $chat->phone,
             text: $message->text,
             delay: 10,
             token: $channel->token,
         );
+
+        $message->update([
+            'wamm_message_id' => $wammMessageId,
+            'status' => MessageStatus::SENT,
+        ]);
     }
 }

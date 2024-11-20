@@ -144,6 +144,7 @@ class HandleIncomeWhatsAppMessage implements ShouldQueue
                 );
             } catch (\Throwable $th) {
                 $message->update(['status' => MessageStatus::ERROR]);
+                $chat->update(['is_pending_response' => false]);
 
                 $this->fail("Не удалось отправить сообщение в Wamm. Message id: {$message->id}. Причина: {$th->getMessage()}");
             }

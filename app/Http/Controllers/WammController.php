@@ -33,7 +33,7 @@ class WammController extends Controller
         if ($request->json('tip') === 'msg') {
             $message = WammWhatsAppMessageDTO::fromWebhookRequest($request->json('msg_data'));
 
-            dispatch_sync(new HandleIncomeWhatsAppMessage($message));
+            dispatch(new HandleIncomeWhatsAppMessage($message));
         }
     }
 }
