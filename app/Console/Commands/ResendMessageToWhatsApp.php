@@ -21,6 +21,19 @@ class ResendMessageToWhatsApp extends Command
         $id = $this->argument('id') ?? $this->ask('Message id');
 
         $message = Message::find($id);
+
+        if ($message === null) {
+            $this->error("Сообщение с id $id не найдено");
+
+            return;
+        }
+
+        if ($message->is_incoming) {
+            $this->error('Это входящее сообшение. Нельзя отправить повторно');
+
+            return;
+        }
+
         $chat = $message->chat;
         $channel = $chat->channel;
 
