@@ -19,11 +19,11 @@ class OpenAIApi
         string $userMessage,
         Model $model,
         string $systemMessage = '',
-        int|float $temperature = 1.3,
+        int|float $temperature = 1,
         int $n = 1,
-        int|float $maxTokens = 1000,
-        int|float $presencePenalty = 2,
-        int|float $frequencyPenalty = 2,
+        int|float $maxTokens = 500,
+        int|float $presencePenalty = 0,
+        int|float $frequencyPenalty = 0,
         ?ResponseFormat $responseFormat = null,
     ): Response {
         $messages = [
@@ -43,11 +43,11 @@ class OpenAIApi
     public static function chat(
         Collection|array $messages,
         Model $model,
-        int|float $temperature = 1.3,
+        int|float $temperature = 1,
         int $n = 1,
-        int|float $maxTokens = 1000,
-        int|float $presencePenalty = 2,
-        int|float $frequencyPenalty = 2,
+        int|float $maxTokens = 500,
+        int|float $presencePenalty = 0,
+        int|float $frequencyPenalty = 0,
         ?ResponseFormat $responseFormat = null,
     ): Response {
         $data = [
