@@ -6,6 +6,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "grkamil/laravel-telegram-logging": "^1.11",
         "laravel/fortify": "^1.24",
         "laravel/framework": "^11.9",
         "laravel/telescope": "^5.2",
@@ -28,7 +29,10 @@
             "Src\\": "src/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
-        }
+        },
+		"files": [
+			"app/Support/helpers.php"
+		]
     },
     "autoload-dev": {
         "psr-4": {

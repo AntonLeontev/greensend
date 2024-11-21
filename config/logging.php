@@ -2,7 +2,6 @@
 
 use Monolog\Handler\NullHandler;
 use Monolog\Handler\StreamHandler;
-use Monolog\Handler\SyslogUdpHandler;
 use Monolog\Processor\PsrLogMessageProcessor;
 
 return [
@@ -69,29 +68,14 @@ return [
             'driver' => 'daily',
             'path' => storage_path('logs/laravel.log'),
             'level' => env('LOG_LEVEL', 'debug'),
-            'days' => env('LOG_DAILY_DAYS', 14),
+            'days' => env('LOG_DAILY_DAYS', 7),
             'replace_placeholders' => true,
         ],
 
-        'slack' => [
-            'driver' => 'slack',
-            'url' => env('LOG_SLACK_WEBHOOK_URL'),
-            'username' => env('LOG_SLACK_USERNAME', 'Laravel Log'),
-            'emoji' => env('LOG_SLACK_EMOJI', ':boom:'),
-            'level' => env('LOG_LEVEL', 'critical'),
-            'replace_placeholders' => true,
-        ],
-
-        'papertrail' => [
-            'driver' => 'monolog',
-            'level' => env('LOG_LEVEL', 'debug'),
-            'handler' => env('LOG_PAPERTRAIL_HANDLER', SyslogUdpHandler::class),
-            'handler_with' => [
-                'host' => env('PAPERTRAIL_URL'),
-                'port' => env('PAPERTRAIL_PORT'),
-                'connectionString' => 'tls://'.env('PAPERTRAIL_URL').':'.env('PAPERTRAIL_PORT'),
-            ],
-            'processors' => [PsrLogMessageProcessor::class],
+        'telegram' => [
+            'driver' => 'custom',
+            'via' => Logger\TelegramLogger::class,
+            'level' => 'debug',
         ],
 
         'stderr' => [

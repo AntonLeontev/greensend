@@ -73,6 +73,13 @@ final class SendWhatsAppTextMessage implements ShouldQueue
             $message->update(['status' => MessageStatus::ERROR]);
             $chat->update(['is_pending_response' => false]);
 
+            defer(static function () use ($message, $th) {
+                telegram_error('Не удалось отправить сообщение в Wamm', [
+                    'message_id' => $message->id,
+                    'error' => $th->getMessage(),
+                ]);
+            })->always();
+
             $this->fail("Не удалось отправить сообщение в Wamm. Message id: {$message->id}. Причина: {$th->getMessage()}");
         }
 

@@ -16,12 +16,7 @@ use Illuminate\Support\Facades\Route;
 if (config('app.url') === 'http://127.0.0.1:8000') {
     Route::get('test', function (OpenAIService $service) {
 
-        $condition = $service->determineAnswerType(
-            'Здравствуйте! Рассказать про наш магазин?',
-            'зайчик',
-        );
-
-        dd($condition);
+        hawk()->sendMessage('test');
     });
 }
 
