@@ -2,9 +2,11 @@
 
 namespace App\Providers;
 
+use App\Models\Channel;
 use App\Services\OpenAI\Exceptions\OpenAIException;
 use App\Services\Wamm\Exceptions\WammException;
 use App\Services\Wamm\Exceptions\WammFailExecution;
+use Exception;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\ServiceProvider;
@@ -18,7 +20,13 @@ class HttpServiceProvider extends ServiceProvider
     {
         Http::macro('wammGet', function (string $method, ?array $query = null, ?string $token = null) {
             if ($token === null) {
-                $token = config('services.wamm.token');
+                $channel = Channel::where('is_main', true)->first(['token']);
+
+                if ($channel === null) {
+                    throw new Exception('Не добавлен активный номер в разделе номера WhatsApp');
+                }
+
+                $token = $channel->token;
             }
 
             $response = Http::baseUrl('https://wamm.chat/api2')

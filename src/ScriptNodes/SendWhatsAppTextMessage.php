@@ -9,13 +9,9 @@ use App\Models\Distribution;
 use App\Models\Message;
 use App\Services\ConversationScriptService;
 use App\Services\Wamm\WammService;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Queue\Queueable;
 
-final class SendWhatsAppTextMessage implements ShouldQueue
+final class SendWhatsAppTextMessage extends ScriptNode
 {
-    use Queueable;
-
     public function __construct(private string $phone, private int $distributionId, private int $nodeId) {}
 
     public static function title(): string
@@ -87,14 +83,5 @@ final class SendWhatsAppTextMessage implements ShouldQueue
             'wamm_message_id' => $wammMessageId,
             'status' => MessageStatus::SENT,
         ]);
-    }
-
-    public static function serialize(): array
-    {
-        return [
-            'type' => self::type(),
-            'class' => self::class,
-            'title' => self::title(),
-        ];
     }
 }

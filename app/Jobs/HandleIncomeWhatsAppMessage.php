@@ -147,7 +147,7 @@ class HandleIncomeWhatsAppMessage implements ShouldQueue
                 $wammMessageId = $wamm->sendMessage(
                     phone: $chat->phone,
                     text: $answer,
-                    delay: 10,
+                    delay: 20,
                     token: $channel->token,
                 );
             } catch (\Throwable $th) {
