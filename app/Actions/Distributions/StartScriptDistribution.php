@@ -18,9 +18,12 @@ class StartScriptDistribution
 
         $file = Storage::get($distribution->uploadedFile->result_path);
         $phones = explode("\n", $file);
+        $delay = now()->addSeconds(30);
 
         foreach ($phones as $phone) {
-            dispatch(new SendWhatsAppTextMessage($phone, $distribution->id, 1));
+            dispatch(new SendWhatsAppTextMessage($phone, $distribution->id, 1))->delay($delay);
+
+            $delay = $delay->addSeconds(30);
         }
 
         $distribution->update([

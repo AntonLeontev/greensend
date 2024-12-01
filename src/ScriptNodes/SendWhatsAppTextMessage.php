@@ -62,7 +62,7 @@ final class SendWhatsAppTextMessage extends ScriptNode
             $wammMessageId = $wamm->sendMessage(
                 phone: $this->phone,
                 text: $scriptNode->action->data->text,
-                delay: $scriptNode->action->data->delay ?? 30,
+                delay: $scriptNode->action->data->delay ?? 5,
                 token: $channel->token,
             );
         } catch (\Throwable $th) {

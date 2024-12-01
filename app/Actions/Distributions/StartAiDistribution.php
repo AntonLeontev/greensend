@@ -18,9 +18,12 @@ class StartAiDistribution
 
         $file = Storage::get($distribution->uploadedFile->result_path);
         $phones = explode("\n", $file);
+        $delay = now()->addSeconds(30);
 
         foreach ($phones as $phone) {
-            dispatch(new SendAiDistributionInitMessage($phone, $distribution->id));
+            dispatch(new SendAiDistributionInitMessage($phone, $distribution->id))->delay($delay);
+
+            $delay = $delay->addSeconds(30);
         }
 
         $distribution->update([
