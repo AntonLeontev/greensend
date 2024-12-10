@@ -16,9 +16,9 @@ abstract class ScriptNode implements ShouldQueue
     public static function serialize(): array
     {
         return [
-            'type' => self::type(),
-            'class' => self::class,
-            'title' => self::title(),
+            'type' => static::type(),
+            'class' => static::class,
+            'title' => static::title(),
         ];
     }
 }
