@@ -14,7 +14,7 @@ class WhatsappFileCheck implements ShouldQueue
 {
     use Queueable;
 
-    public $timeout = 1800;
+    public $timeout = 3600;
 
     public $tries = 1;
 
