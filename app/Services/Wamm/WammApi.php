@@ -14,9 +14,10 @@ class WammApi
 
     public function checkPhone(string $phone, ?string $token = null): Response
     {
-        return Http::wammGet('check_phone', [
-            'phone' => $phone,
-        ], $token);
+        return Http::retry(3, 1000)
+            ->wammGet('check_phone', [
+                'phone' => $phone,
+            ], $token);
     }
 
     public function sendMessage(string $phone, string $text, ?int $delay = null, ?int $quoteMessageId = null, ?string $token = null): Response
