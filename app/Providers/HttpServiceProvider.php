@@ -30,6 +30,7 @@ class HttpServiceProvider extends ServiceProvider
             }
 
             $response = Http::baseUrl('https://wamm.chat/api2')
+                ->retry(3, 1000)
                 ->acceptJson()
                 ->get("$method/$token", $query);
 

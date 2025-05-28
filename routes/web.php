@@ -15,8 +15,9 @@ use Illuminate\Support\Facades\Route;
 
 if (config('app.url') === 'http://127.0.0.1:8000') {
     Route::get('test', function (OpenAIService $service) {
+        $response = $service->complete('test');
 
-        hawk()->sendMessage('test');
+        dd($response);
     });
 }
 

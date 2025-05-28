@@ -22,7 +22,7 @@ class DistributionStoreRequest extends FormRequest
             'conversation' => ['required_if:type,script', 'json'],
 
             'first_message' => ['required_if:type,ai', 'string', 'max:1000'],
-            'system_message' => ['required_if:type,ai', 'string', 'max:2000'],
+            'system_message' => ['required_if:type,ai', 'string', 'max:10000'],
         ];
     }
 
