@@ -15,7 +15,7 @@ class WhatsAppCheckController extends Controller
     public function __invoke(Request $request, WammService $wamm): JsonResponse
     {
         $request->validate([
-            'phone' => ['required', 'starts_with:7'],
+            'phone' => ['required'],
         ]);
 
         $result = $wamm->checkPhone($request->get('phone'));
