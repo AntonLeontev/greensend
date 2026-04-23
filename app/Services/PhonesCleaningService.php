@@ -73,9 +73,10 @@ class PhonesCleaningService
 
             $initPhonesCount += $phonesCollection->count();
 
-            $phonesCollection->filter(static function (string $phone) {
-                return str_starts_with($phone, '+79') || str_starts_with($phone, '79');
-            })
+            $phonesCollection
+                // ->filter(static function (string $phone) {
+                //     return str_starts_with($phone, '+79') || str_starts_with($phone, '79');
+                // })
                 ->each(function ($phone) use ($phones, &$resultPhonesCount) {
                     $resultPhonesCount += 1;
                     $phones->add(trim($phone, '+'));
